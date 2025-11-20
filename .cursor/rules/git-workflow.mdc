@@ -150,3 +150,12 @@ Checklist:
 - [ ] Quality checks pass (above commands)
 - [ ] Tests added for new logic (H/I/B coverage)
 - [ ] `.env.example` updated if env vars changed
+
+### PR Labels for Automated Releases (CD)
+Apply one label per PR to control semantic versioning:
+- **release:major** - Breaking changes (`feat!:` or `BREAKING CHANGE:`)
+- **release:minor** - New features (`feat:`)
+- **release:patch** - Bug fixes, refactors (`fix:`, `perf:`, `refactor:`)
+- **release:skip** - No version bump (`docs:`, `test:`, `ci:`, `chore:`)
+
+If multiple labels present, highest priority wins (major > minor > patch > skip)
