@@ -1,5 +1,5 @@
 ---
-description: Git workflow and conventional commit standards
+description: Git workflow, conventional commits, and PR creation standards
 globs:
   - '**/*'
 ---
@@ -106,3 +106,47 @@ fix/login-redirect-bug
 refactor/api-error-handling
 test/add-component-tests
 ```
+
+## Pull Requests
+
+### Creating PRs via GitHub CLI
+```bash
+# Interactive mode (recommended - auto-fills from commits)
+gh pr create --fill
+
+# With custom title/body
+gh pr create --title "feat: add user profile" --body "Brief description"
+
+# Draft PR for early feedback
+gh pr create --draft
+
+# Link to issue
+gh pr create --fill --linked-issue 123
+```
+
+### PR Title Format
+Use conventional commit style:
+- `feat: add new feature`
+- `fix: resolve bug description`
+- `docs: update documentation`
+- `refactor: improve code structure`
+
+### PR Description
+Keep it concise:
+- **Why**: Problem being solved
+- **What**: Key changes (2-4 bullets)
+- **Testing**: How to verify
+- **Risk**: Impact assessment (LOW/MEDIUM/HIGH)
+
+### Before Opening PR
+```bash
+pnpm type-check  # TypeScript validation
+pnpm lint        # ESLint check
+pnpm test        # Run all tests
+```
+
+Checklist:
+- [ ] All commits follow conventional commit format
+- [ ] Quality checks pass (above commands)
+- [ ] Tests added for new logic (H/I/B coverage)
+- [ ] `.env.example` updated if env vars changed
