@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { headers, cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { redirect, isRedirectError } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
 import { logger } from '@/utils/logger'
 
@@ -51,6 +51,11 @@ export default function Login({
 
       return redirect('/')
     } catch (error) {
+      // Re-throw redirect errors (not actual errors, just Next.js internal flow)
+      if (isRedirectError(error)) {
+        throw error
+      }
+
       logger.error({
         source,
         message: 'Unexpected error during sign in',
@@ -109,6 +114,11 @@ export default function Login({
 
       return redirect('/login?message=Check email to continue sign in process')
     } catch (error) {
+      // Re-throw redirect errors (not actual errors, just Next.js internal flow)
+      if (isRedirectError(error)) {
+        throw error
+      }
+
       logger.error({
         source,
         message: 'Unexpected error during sign up',
