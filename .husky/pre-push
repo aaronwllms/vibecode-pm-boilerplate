@@ -1,0 +1,30 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running pre-push checks..."
+echo ""
+
+# TypeScript type checking
+echo "📘 Type checking..."
+pnpm type-check || {
+  echo "❌ TypeScript errors found. Fix them before pushing."
+  exit 1
+}
+
+# Format validation
+echo "💅 Checking formatting..."
+pnpm format-check || {
+  echo "❌ Formatting issues found. Run 'pnpm format' to fix."
+  exit 1
+}
+
+# Full test suite
+echo "🧪 Running test suite..."
+pnpm test:ci || {
+  echo "❌ Tests failed. Fix them before pushing."
+  exit 1
+}
+
+echo ""
+echo "✅ All pre-push checks passed!"
+

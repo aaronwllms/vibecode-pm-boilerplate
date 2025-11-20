@@ -9,5 +9,6 @@ module.exports = {
   '*.{js,jsx,ts,tsx}': [
     buildEslintCommand,
     'prettier --ignore-path .gitignore --write',
+    'jest --bail --findRelatedTests --passWithNoTests',
   ],
 }
