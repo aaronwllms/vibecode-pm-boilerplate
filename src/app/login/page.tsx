@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { headers, cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
+import { logger } from '@/utils/logger'
 
 export default function Login({
   searchParams,
@@ -11,45 +12,113 @@ export default function Login({
   const signIn = async (formData: FormData) => {
     'use server'
 
+    const source = 'app/login/page.tsx:signIn'
     const email = formData.get('email') as string
     const password = formData.get('password') as string
     const cookieStore = cookies()
     const supabase = createServerClient(cookieStore)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      if (error) {
+        const errorCode = error.message.toLowerCase().includes('invalid')
+          ? 'UNAUTHORIZED'
+          : 'SUPABASE_AUTH_ERROR'
+
+        logger.warn({
+          source,
+          message: 'Sign in failed',
+          code: errorCode,
+          context: {
+            email,
+            supabaseError: error.message,
+          },
+        })
+
+        return redirect('/login?message=Invalid credentials')
+      }
+
+      logger.info({
+        source,
+        message: 'User signed in successfully',
+        code: 'SUCCESS',
+        context: { email },
+      })
+
+      return redirect('/')
+    } catch (error) {
+      logger.error({
+        source,
+        message: 'Unexpected error during sign in',
+        code: 'INTERNAL_ERROR',
+        context: { email },
+        error,
+      })
+
+      return redirect('/login?message=An error occurred. Please try again.')
     }
-
-    return redirect('/')
   }
 
   const signUp = async (formData: FormData) => {
     'use server'
 
+    const source = 'app/login/page.tsx:signUp'
     const origin = headers().get('origin')
     const email = formData.get('email') as string
     const password = formData.get('password') as string
     const cookieStore = cookies()
     const supabase = createServerClient(cookieStore)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${origin}/api/auth/callback`,
-      },
-    })
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${origin}/api/auth/callback`,
+        },
+      })
 
-    if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      if (error) {
+        const errorCode = error.message.toLowerCase().includes('already')
+          ? 'CONFLICT'
+          : 'SUPABASE_AUTH_ERROR'
+
+        logger.warn({
+          source,
+          message: 'Sign up failed',
+          code: errorCode,
+          context: {
+            email,
+            supabaseError: error.message,
+          },
+        })
+
+        return redirect('/login?message=Could not create account')
+      }
+
+      logger.info({
+        source,
+        message: 'User signed up successfully',
+        code: 'SUCCESS',
+        context: { email },
+      })
+
+      return redirect('/login?message=Check email to continue sign in process')
+    } catch (error) {
+      logger.error({
+        source,
+        message: 'Unexpected error during sign up',
+        code: 'INTERNAL_ERROR',
+        context: { email },
+        error,
+      })
+
+      return redirect('/login?message=An error occurred. Please try again.')
     }
-
-    return redirect('/login?message=Check email to continue sign in process')
   }
 
   return (

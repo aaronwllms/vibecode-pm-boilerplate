@@ -1,9 +1,22 @@
 'use client'
 
 import useGetMessage from '@/hooks/useGetMessage'
+import { ErrorDisplay } from '@/components/error-display'
+import { logger } from '@/utils/logger'
 
 const ReactQueryExample = () => {
-  const { isLoading, data } = useGetMessage()
+  const { isLoading, data, error } = useGetMessage()
+
+  if (error) {
+    logger.error({
+      source: 'components/ReactQueryExample.tsx',
+      message: 'Failed to fetch message',
+      code: 'EXTERNAL_API_ERROR',
+      error,
+    })
+
+    return <ErrorDisplay message="Failed to load message. Please try again." />
+  }
 
   if (isLoading) return <div>Loading...</div>
 

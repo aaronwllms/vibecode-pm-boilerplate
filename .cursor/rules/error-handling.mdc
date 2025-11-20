@@ -1,0 +1,443 @@
+---
+description: Comprehensive error handling, logging, and monitoring standards
+autoAttach:
+  globs:
+    - "src/**/*.{ts,tsx}"
+    - "src/app/api/**/*.ts"
+    - "src/app/**/error.tsx"
+---
+
+# Error Handling & Logging Standards
+
+## Philosophy
+- **User-facing errors**: Clear, actionable, never expose internals
+- **Developer errors**: Rich context, stack traces, debugging info
+- **Security-first**: Never log sensitive data (passwords, tokens, PII)
+- **Fail gracefully**: Always provide fallback UI and recovery paths
+
+## Error Taxonomy
+
+### Standard Error Codes
+Use these consistent codes across your application:
+
+**Validation Errors (4xx - Client)**
+- `VALIDATION_ERROR` - Input validation failed (400)
+- `INVALID_FORMAT` - Data format incorrect (400)
+- `MISSING_REQUIRED_FIELD` - Required field not provided (400)
+
+**Authentication/Authorization (4xx - Client)**
+- `UNAUTHORIZED` - Not authenticated (401)
+- `FORBIDDEN` - Authenticated but lacks permission (403)
+- `SESSION_EXPIRED` - Auth session expired (401)
+
+**Resource Errors (4xx - Client)**
+- `NOT_FOUND` - Resource doesn't exist (404)
+- `CONFLICT` - Resource already exists (409)
+- `GONE` - Resource permanently deleted (410)
+
+**Rate Limiting (4xx - Client)**
+- `RATE_LIMITED` - Too many requests (429)
+- `QUOTA_EXCEEDED` - API quota exceeded (429)
+
+**Server Errors (5xx - Server)**
+- `INTERNAL_ERROR` - Unexpected server error (500)
+- `DATABASE_ERROR` - Database operation failed (500)
+- `EXTERNAL_API_ERROR` - Third-party API failed (502)
+- `TIMEOUT` - Operation timed out (504)
+
+**Supabase-Specific**
+- `SUPABASE_AUTH_ERROR` - Supabase auth failure
+- `SUPABASE_RLS_ERROR` - Row Level Security rejection
+- `SUPABASE_CONNECTION_ERROR` - Cannot connect to Supabase
+
+## Error Response Envelopes
+
+### API Routes (Route Handlers)
+
+**Success Response:**
+```typescript
+NextResponse.json(
+  { success: true, data: result },
+  { status: 200 }
+)
+```
+
+**Error Response:**
+```typescript
+NextResponse.json(
+  {
+    success: false,
+    error: {
+      message: 'User-friendly error message',
+      code: 'VALIDATION_ERROR'
+    }
+  },
+  { status: 400 }
+)
+```
+
+### Server Actions
+
+**Success Response:**
+```typescript
+return { success: true, data: result }
+```
+
+**Error Response:**
+```typescript
+return {
+  success: false,
+  error: {
+    message: 'User-friendly error message',
+    code: 'VALIDATION_ERROR'
+  }
+}
+```
+
+## Logger Utility Usage
+
+### Import and Basic Usage
+```typescript
+import { logger } from '@/utils/logger'
+
+logger.error({
+  source: 'api/posts/route.ts',
+  message: 'Failed to fetch posts',
+  code: 'DATABASE_ERROR',
+  context: { userId: '123' }
+})
+```
+
+### Log Levels
+- **debug**: Development-only detailed information (not logged in production)
+- **info**: General operational messages
+- **warn**: Potential issues that aren't immediately problematic
+- **error**: Serious issues requiring attention
+
+### Required Parameters
+- `source`: File path (e.g., 'api/posts/route.ts')
+- `message`: Human-readable description
+- `code`: Error code from taxonomy
+
+### Optional Parameters
+- `context`: Additional data object
+- `error`: Error object for stack traces
+
+## Error Handling by Context
+
+### 1. API Routes (Route Handlers)
+
+```typescript
+import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/utils/logger'
+
+export async function GET(request: NextRequest) {
+  const source = 'api/posts/route.ts'
+  
+  try {
+    const posts = await fetchPosts()
+    return NextResponse.json({ success: true, data: posts })
+  } catch (error) {
+    logger.error({
+      source,
+      message: 'Failed to fetch posts',
+      code: 'INTERNAL_ERROR',
+      context: { path: request.url },
+      error
+    })
+    
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          message: 'Failed to fetch posts',
+          code: 'INTERNAL_ERROR'
+        }
+      },
+      { status: 500 }
+    )
+  }
+}
+```
+
+### 2. Server Actions
+
+```typescript
+'use server'
+
+import { logger } from '@/utils/logger'
+
+export async function createPost(formData: FormData) {
+  const source = 'app/posts/actions.ts:createPost'
+  
+  try {
+    const title = formData.get('title')
+    if (!title) {
+      return {
+        success: false,
+        error: {
+          message: 'Title is required',
+          code: 'MISSING_REQUIRED_FIELD'
+        }
+      }
+    }
+    
+    const post = await db.posts.create({ title })
+    return { success: true, data: post }
+  } catch (error) {
+    logger.error({
+      source,
+      message: 'Failed to create post',
+      code: 'INTERNAL_ERROR',
+      error
+    })
+    
+    return {
+      success: false,
+      error: {
+        message: 'Failed to create post. Please try again.',
+        code: 'INTERNAL_ERROR'
+      }
+    }
+  }
+}
+```
+
+### 3. Client Components (React Query)
+
+```typescript
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+import { logger } from '@/utils/logger'
+import { ErrorDisplay } from '@/components/error-display'
+
+export function PostList() {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const response = await fetch('/api/posts')
+      if (!response.ok) throw new Error('Failed to fetch')
+      return response.json()
+    }
+  })
+  
+  if (error) {
+    logger.error({
+      source: 'components/post-list.tsx',
+      message: error.message,
+      code: 'EXTERNAL_API_ERROR',
+      error
+    })
+    
+    return <ErrorDisplay message="Failed to load posts" />
+  }
+  
+  if (isLoading) return <div>Loading...</div>
+  return <div>{/* Render posts */}</div>
+}
+```
+
+### 4. Error Boundaries
+
+Use the provided `ErrorBoundary` component to catch React errors:
+
+```typescript
+import { ErrorBoundary } from '@/components/error-boundary'
+import { ErrorFallback } from '@/components/error-fallback'
+
+export default function PostsPage() {
+  return (
+    <ErrorBoundary 
+      fallback={<ErrorFallback />}
+      source="app/posts/page.tsx"
+    >
+      <PostList />
+    </ErrorBoundary>
+  )
+}
+```
+
+## Supabase Error Handling
+
+### Auth Errors
+
+```typescript
+const { data, error } = await supabase.auth.signInWithPassword({
+  email,
+  password
+})
+
+if (error) {
+  const errorCode = error.message.includes('Invalid')
+    ? 'UNAUTHORIZED'
+    : 'SUPABASE_AUTH_ERROR'
+  
+  logger.warn({
+    source: 'app/login/actions.ts',
+    message: error.message,
+    code: errorCode,
+    context: { email }
+  })
+  
+  // Generic message (don't leak user existence)
+  return {
+    success: false,
+    error: {
+      message: 'Invalid credentials',
+      code: errorCode
+    }
+  }
+}
+```
+
+### Database Errors
+
+```typescript
+const { data, error } = await supabase
+  .from('posts')
+  .select('*')
+  .eq('id', postId)
+  .single()
+
+if (error) {
+  // Map Supabase error codes to standard codes
+  const errorCode = error.code === 'PGRST116' 
+    ? 'NOT_FOUND' 
+    : 'DATABASE_ERROR'
+  
+  logger.error({
+    source: 'api/posts/[id]/route.ts',
+    message: error.message,
+    code: errorCode,
+    context: { postId, supabaseCode: error.code }
+  })
+  
+  const statusCode = errorCode === 'NOT_FOUND' ? 404 : 500
+  return NextResponse.json(
+    {
+      success: false,
+      error: {
+        message: errorCode === 'NOT_FOUND' ? 'Post not found' : 'Database error',
+        code: errorCode
+      }
+    },
+    { status: statusCode }
+  )
+}
+```
+
+### Common Supabase Error Codes
+- `PGRST116` - Row not found (map to NOT_FOUND)
+- `23505` - Unique constraint violation (map to CONFLICT)
+- `23503` - Foreign key violation (map to VALIDATION_ERROR)
+- `42501` - RLS policy violation (map to FORBIDDEN)
+
+## Security: What NOT to Log
+
+**Never log:**
+- ❌ Passwords (plaintext or hashed)
+- ❌ API keys or secrets
+- ❌ Auth tokens (JWT, session tokens, OAuth tokens)
+- ❌ Credit card numbers or payment info
+- ❌ Social security numbers or government IDs
+- ❌ Full request/response bodies (may contain sensitive data)
+
+**Safe to log:**
+- ✅ User IDs (non-PII identifiers)
+- ✅ Email addresses (for auth context only)
+- ✅ Request paths and methods
+- ✅ Error codes and messages
+- ✅ Non-sensitive metadata
+
+The logger utility automatically sanitizes common sensitive field names.
+
+## User-Facing Error Messages
+
+### Guidelines
+- **Be clear and actionable**: Tell users what went wrong and what to do
+- **Be empathetic**: Acknowledge the frustration
+- **Be honest**: Don't lie about what happened
+- **Be concise**: One or two sentences max
+
+### Good Examples
+- "We couldn't find that post. It may have been deleted."
+- "Your session expired. Please sign in again."
+- "Something went wrong. Please try again, or contact support if this continues."
+
+### Bad Examples
+- "Error: ECONNREFUSED" (too technical)
+- "An error occurred" (too vague)
+- "Internal server error at line 42" (leaks internals)
+
+## Error UI Components
+
+### ErrorDisplay Component
+Use for displaying errors inline:
+
+```typescript
+import { ErrorDisplay } from '@/components/error-display'
+
+<ErrorDisplay 
+  message="Failed to load posts"
+  code="DATABASE_ERROR"
+  variant="destructive"
+/>
+```
+
+### ErrorFallback Component
+Use as fallback in error boundaries:
+
+```typescript
+import { ErrorFallback } from '@/components/error-fallback'
+
+<ErrorBoundary fallback={<ErrorFallback />}>
+  <YourComponent />
+</ErrorBoundary>
+```
+
+## Production Logging
+
+### Log Levels in Production
+- ✅ **info**: Enabled
+- ✅ **warn**: Enabled
+- ✅ **error**: Enabled
+- ❌ **debug**: Disabled
+
+### Vercel Integration
+All logs are automatically captured by Vercel when using structured `console.*` output. The logger utility formats logs as JSON for easy querying in Vercel dashboard.
+
+### Accessing Logs
+1. Vercel Dashboard → Your Project → Logs
+2. Filter by severity, source, or search terms
+3. Use JSON search for structured queries
+
+## Testing Error Scenarios
+
+Always test error handling in your tests:
+
+```typescript
+it('should handle errors gracefully', async () => {
+  // Mock failure
+  vi.mocked(fetchPosts).mockRejectedValue(new Error('DB error'))
+  
+  const response = await GET(mockRequest)
+  const data = await response.json()
+  
+  expect(response.status).toBe(500)
+  expect(data.success).toBe(false)
+  expect(data.error.code).toBe('INTERNAL_ERROR')
+})
+```
+
+## Quick Reference Checklist
+
+Before shipping error handling code:
+- [ ] All async operations wrapped in try/catch
+- [ ] Errors logged with source and code
+- [ ] User-friendly error messages (not internal details)
+- [ ] Appropriate HTTP status codes
+- [ ] No sensitive data in logs
+- [ ] Error boundaries for critical UI sections
+- [ ] Tests cover error scenarios
+- [ ] Error codes use standard taxonomy

@@ -8,6 +8,8 @@ autoAttach:
 
 # API Development Guidelines
 
+**Note:** For comprehensive error handling patterns, logging standards, and error codes, see `.cursor/rules/error-handling.mdc`
+
 ## Path Naming Standards
 
 **Resource Naming:**
@@ -36,10 +38,16 @@ autoAttach:
 - Return typed error envelopes on validation failure
 
 ## Error Handling
+
+**See `.cursor/rules/error-handling.mdc` for complete error handling patterns and examples.**
+
+Quick reference:
+- Use `logger` utility from `@/utils/logger` for structured logging
 - NEVER leak stack traces to clients - log server-side only
 - Use consistent error envelope: `{ success: false, error: { message, code } }`
 - Wrap all async operations in try/catch
 - Return appropriate HTTP status codes (400, 401, 403, 404, 500)
+- Include `source` parameter in all logs (e.g., 'api/posts/route.ts')
 
 ## Data Transfer Objects (DTOs)
 - Use DTOs for API responses - don't expose raw database entities
@@ -74,6 +82,10 @@ NextResponse.json(
 - Never expose auth errors that leak user existence
 
 ## Standard Error Codes
+
+**See `.cursor/rules/error-handling.mdc` for complete error code taxonomy.**
+
+Common API error codes:
 - `VALIDATION_ERROR` - Input validation failed (400)
 - `UNAUTHORIZED` - Not authenticated (401)
 - `FORBIDDEN` - Authenticated but lacks permission (403)
@@ -85,8 +97,11 @@ NextResponse.json(
 - [ ] Input validation with Zod schema
 - [ ] Auth check if endpoint is protected
 - [ ] Try/catch wrapping async operations
+- [ ] Logging with `logger` utility (include source)
 - [ ] DTO transformation (no raw DB types)
 - [ ] Consistent error envelope
 - [ ] Appropriate HTTP status codes
 - [ ] No stack traces in responses
 - [ ] Tests cover happy/error/auth cases
+
+**Example implementation:** See `src/app/api/message/route.ts` for reference

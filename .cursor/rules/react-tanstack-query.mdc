@@ -8,6 +8,8 @@ globs:
 
 # TanStack Query v5 (React Query) Patterns
 
+**Note:** For error handling patterns and logging, see `.cursor/rules/error-handling.mdc`
+
 ## When to Use
 - Client-side data fetching and caching
 - Real-time data that needs frequent updates
@@ -19,19 +21,29 @@ Create custom hooks in `src/hooks/` for all queries:
 
 ```typescript
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 export function useGetMessage() {
   return useQuery({
     queryKey: ['message'],
     queryFn: async () => {
-      const response = await fetch('/api/message')
-      if (!response.ok) throw new Error('Failed to fetch')
-      return response.json()
+      const { data } = await axios.get('/api/message')
+      if (!data.success) {
+        throw new Error(data.error?.message || 'Failed to fetch')
+      }
+      return data.data
     },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 1000 * 60 * 5, // 5 minutes
   })
 }
 ```
+
+**Key points:**
+- Handle API error envelope format (`{ success, data?, error? }`)
+- Implement retry logic with exponential backoff
+- Throw errors for React Query to catch
 
 ## Query Key Conventions
 - Use descriptive arrays: `['resource', id]` or `['resource', 'list', filters]`
@@ -41,9 +53,40 @@ export function useGetMessage() {
   - `['post', postId, 'comments']`
 
 ## Error Handling
-- Implement error boundaries for query errors
-- Use `onError` callbacks for specific error handling
-- Provide user-friendly error messages
+
+**See `.cursor/rules/error-handling.mdc` for complete error handling patterns.**
+
+In components using queries:
+- Log errors using `logger.error()` from `@/utils/logger`
+- Display errors using `<ErrorDisplay />` component
+- Include retry logic in query configuration
+
+```typescript
+import { logger } from '@/utils/logger'
+import { ErrorDisplay } from '@/components/error-display'
+
+const { data, error, isLoading } = useGetData()
+
+if (error) {
+  logger.error({
+    source: 'components/my-component.tsx',
+    message: 'Failed to fetch data',
+    code: 'EXTERNAL_API_ERROR',
+    error
+  })
+  return <ErrorDisplay message="Failed to load data" />
+}
+```
+
+For critical errors, wrap in ErrorBoundary:
+```typescript
+import { ErrorBoundary } from '@/components/error-boundary'
+import { ErrorFallback } from '@/components/error-fallback'
+
+<ErrorBoundary fallback={<ErrorFallback />} source="components/data-list.tsx">
+  <DataList />
+</ErrorBoundary>
+```
 
 ## Mutations
 ```typescript
@@ -72,5 +115,7 @@ export function useUpdateUser() {
 - Configure `staleTime` and `gcTime` based on data characteristics
 - Use optimistic updates where appropriate
 
-## Reference
-See `src/hooks/useGetMessage.ts` and `src/components/ReactQueryExample.tsx` for examples
+## Reference Examples
+- Query hook: `src/hooks/useGetMessage.ts`
+- Component with error handling: `src/components/ReactQueryExample.tsx`
+- Error handling patterns: `.cursor/rules/error-handling.mdc`
