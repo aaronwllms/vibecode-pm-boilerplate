@@ -5,16 +5,31 @@ globs:
   - '**/*.test.tsx'
   - 'src/mocks/**/*.ts'
   - 'src/test/**/*.tsx'
+alwaysApply: true
 ---
 
 # Testing with Jest + React Testing Library + MSW v2
+
+## Goals
+- Keep tests **as simple as possible** while catching real bugs
+- Test **behavior over implementation details**
+- Never change dependencies/lockfiles to "fix" tests
+- Keep tests fast (<1s each) and reliable
 
 ## Testing Philosophy
 - Write tests for components with logic or user interactions
 - Test user behavior and outcomes, not implementation details
 - Follow Arrange-Act-Assert pattern
 - Use descriptive test names that explain expected behavior
-- Aim for meaningful coverage, not just high percentages
+- Cover Happy, Invalid, and Boundary cases for all logic changes
+
+## Test Pyramid Guidelines
+Balance your testing efforts across layers:
+- **E2E (≤15%)**: Only top user journeys and critical paths
+- **Integration (25-45%)**: API routes, auth flows, database interactions
+- **Unit (remainder)**: Pure functions, hooks, component logic
+
+These are guidelines, not strict quotas. Adjust based on what provides the most value.
 
 ## Test Structure
 ```typescript
@@ -49,8 +64,14 @@ This automatically wraps components with:
 - ThemeProvider
 - Other necessary context providers
 
-## Mock Service Worker (MSW v2)
-- Mock API calls in `src/mocks/handlers.ts`
+## Mocking Policy
+**Only mock system boundaries** - not your own business logic:
+- ✅ **Do mock**: External APIs, auth providers, time/randomness, network requests
+- ❌ **Don't mock**: Your own functions, utilities, or business logic in integration tests
+- Mock at the system boundary, not internal implementation
+
+### Mock Service Worker (MSW v2)
+- Mock external API calls in `src/mocks/handlers.ts`
 - MSW is configured for testing only (not in production)
 - Server setup in `src/mocks/server.ts`
 
@@ -65,11 +86,62 @@ export const handlers = [
 ]
 ```
 
+### Mocking Supabase
+- Mock Supabase client only at the system boundary when necessary
+- For integration tests, prefer using a test database over mocking
+- Mock auth state for client components testing user-specific behavior
+
 ## Running Tests
 - All tests: `pnpm test`
 - CI mode: `pnpm test:ci`
 - Watch mode: `pnpm test -- --watch`
 - Run before committing
+
+## Required Test Cases (H/I/B Pattern)
+For every piece of logic, cover these three scenarios:
+- **Happy Path**: Valid inputs, expected success behavior
+- **Invalid Input**: Bad data, validation failures, error handling
+- **Boundary Cases**: Edge cases, limits, empty states, null/undefined
+
+Don't write redundant tests - these three should catch most issues.
+
+## Test Authoring by Type
+
+### UI Components & Pages
+- Use Jest + React Testing Library
+- Use role/name/text queries (e.g., `getByRole`, `getByText`)
+- Include at least one user interaction (e.g., `userEvent.click`)
+- Assert accessibility attributes (`aria-*`, labels, focus states)
+- No snapshot tests - write explicit assertions
+- Test loading states and error states
+
+### API Routes & Handlers
+- Test both success and failure paths
+- Validate request/response shapes
+- Assert proper HTTP status codes
+- Test authentication/authorization requirements
+- Use MSW to mock external API dependencies
+
+### Hooks & Utilities
+- Test happy path, invalid inputs, and edge cases
+- Mock external boundaries only (network requests, browser APIs)
+- Ensure type safety is maintained
+- Test error handling and cleanup
+
+## Coverage Requirements
+Minimum thresholds enforced in CI:
+- **Statements: 80%**
+- **Branches: 70%**
+- **Functions: 70%**
+- **Lines: 80%**
+
+If below threshold, add targeted tests to increase coverage.
+
+## Performance & Reliability
+- Keep tests fast: aim for <1 second per test
+- Avoid flaky tests - if a test is unreliable, fix or quarantine it
+- Use `describe.skip()` with "QUARANTINE: reason" for temporarily disabled tests
+- Always link to a GitHub issue when quarantining tests
 
 ## Examples
 - Component tests: `src/components/ReactQueryExample.test.tsx`
@@ -79,6 +151,16 @@ export const handlers = [
 ## Best Practices
 - Co-locate test files with source files
 - Use `.test.tsx` or `.test.ts` extension
-- Mock Supabase client when necessary
-- Test loading states and error states
 - Test accessibility (screen reader support, keyboard navigation)
+- Write behavior-level assertions, not implementation details
+- Keep tests simple and focused
+- Prefer fewer high-value tests over many near-duplicates
+
+## Authoring Checklist
+Before submitting a PR with tests:
+- [ ] Happy, Invalid, and Boundary cases covered?
+- [ ] Behavior-level assertions (not implementation details)?
+- [ ] Only system boundaries mocked?
+- [ ] Tests run fast (<1s each)?
+- [ ] Coverage thresholds met?
+- [ ] No flaky or skipped tests without issue links?
