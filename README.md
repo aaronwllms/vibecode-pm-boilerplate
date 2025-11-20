@@ -97,6 +97,8 @@ Websites started using this template:
 
 # Documentation
 
+> **For AI Coding Agents**: See [AGENTS.md](AGENTS.md) for detailed setup instructions, code conventions, testing guidelines, and project structure information.
+
 ### Requirements
 
 - Node.js >= 18.17.0
