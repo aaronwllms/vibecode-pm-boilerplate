@@ -19,11 +19,27 @@ export async function AppHeader() {
   let profile: Profile | null = null
 
   if (user) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()
+
+    if (error) {
+      // Profile should always exist for authenticated users
+      // If it doesn't, this is a critical system error
+      console.error('CRITICAL: User authenticated but profile missing', {
+        userId: user.id,
+        email: user.email,
+        error: error.message,
+      })
+      
+      // Sign out the user since their account is in an invalid state
+      const cookieStore = cookies()
+      const supabase = createServerClient(cookieStore)
+      await supabase.auth.signOut()
+      return redirect('/login?message=Account setup incomplete. Please contact support.')
+    }
 
     profile = data
   }
