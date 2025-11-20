@@ -1,5 +1,5 @@
 {
   "jest.jestCommandLine": "pnpm test --",
-  "jest.autoRun": "off"
+  "jest.runMode": "on-demand"
 }
 
