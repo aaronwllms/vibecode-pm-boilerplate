@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
 import { NavLinks } from './nav-links'
@@ -11,6 +11,8 @@ import type { Profile } from '@/types/profile'
 export async function AppHeader() {
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
+  const headersList = headers()
+  const pathname = headersList.get('x-pathname') || ''
 
   const {
     data: { user },
@@ -18,7 +20,8 @@ export async function AppHeader() {
 
   let profile: Profile | null = null
 
-  if (user) {
+  // Skip profile validation on login page to prevent redirect loops
+  if (user && !pathname.includes('/login')) {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
