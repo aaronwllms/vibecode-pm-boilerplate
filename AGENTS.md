@@ -58,13 +58,21 @@ Before running the project, you need to set up Supabase credentials:
 
 - **Test Framework**: Jest with SWC compiler + React Testing Library
 - **Mock Service Worker (MSW)**: v2 configured for API mocking (testing only)
-- **Test Files**: Co-locate test files with components using `.test.tsx` or `.test.ts` extension
+- **Test Files**: Co-locate test files with source files using naming conventions:
+  - **Unit tests**: `.unit.test.tsx` or `.unit.test.ts` (isolated logic, no external dependencies)
+  - **Integration tests**: `.integration.test.tsx` or `.integration.test.ts` (external dependencies, API calls, auth flows)
 - **Test Utilities**: Import from `@/test/test-utils` for custom render functions
 - **Running Tests**:
   - All tests: `pnpm test`
+  - Unit tests only: `pnpm test:unit`
+  - Integration tests only: `pnpm test:integration`
   - CI mode: `pnpm test:ci`
-  - Watch mode: `pnpm test -- --watch`
-- **Example Tests**: See `/src/app/test-examples/` and `/src/components/ReactQueryExample.test.tsx`
+  - Watch mode (all): `pnpm test -- --watch`
+  - Watch mode (unit): `pnpm test:unit:watch`
+  - Watch mode (integration): `pnpm test:integration:watch`
+- **Example Tests**: 
+  - Unit: `/src/utils/logger.unit.test.ts`, `/src/app/test-examples/counter.unit.test.tsx`
+  - Integration: `/src/components/ReactQueryExample.integration.test.tsx`
 
 ## Quality Checks
 
@@ -102,7 +110,9 @@ When adding new UI components:
 2. Place custom components in `/src/components/`
 3. Place shadcn/ui components in `/src/components/ui/`
 4. Use the `@/` import alias
-5. Write tests alongside components with `.test.tsx` extension
+5. Write tests alongside components:
+   - Use `.unit.test.tsx` for isolated component tests
+   - Use `.integration.test.tsx` for components with external dependencies
 
 ## Bundle Analysis
 
