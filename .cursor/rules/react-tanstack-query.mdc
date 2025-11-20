@@ -1,0 +1,121 @@
+---
+description: TanStack Query v5 patterns for client-side data fetching
+globs:
+  - 'src/hooks/**/*.ts'
+  - 'src/components/**/*.tsx'
+  - 'src/providers/ReactQueryProvider.tsx'
+---
+
+# TanStack Query v5 (React Query) Patterns
+
+**Note:** For error handling patterns and logging, see `.cursor/rules/error-handling.mdc`
+
+## When to Use
+- Client-side data fetching and caching
+- Real-time data that needs frequent updates
+- Data with complex caching requirements
+- Client-side mutations with optimistic updates
+
+## Custom Hooks Pattern
+Create custom hooks in `src/hooks/` for all queries:
+
+```typescript
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+
+export function useGetMessage() {
+  return useQuery({
+    queryKey: ['message'],
+    queryFn: async () => {
+      const { data } = await axios.get('/api/message')
+      if (!data.success) {
+        throw new Error(data.error?.message || 'Failed to fetch')
+      }
+      return data.data
+    },
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
+}
+```
+
+**Key points:**
+- Handle API error envelope format (`{ success, data?, error? }`)
+- Implement retry logic with exponential backoff
+- Throw errors for React Query to catch
+
+## Query Key Conventions
+- Use descriptive arrays: `['resource', id]` or `['resource', 'list', filters]`
+- Examples:
+  - `['user', userId]`
+  - `['posts', 'list', { status: 'published' }]`
+  - `['post', postId, 'comments']`
+
+## Error Handling
+
+**See `.cursor/rules/error-handling.mdc` for complete error handling patterns.**
+
+In components using queries:
+- Log errors using `logger.error()` from `@/utils/logger`
+- Display errors using `<ErrorDisplay />` component
+- Include retry logic in query configuration
+
+```typescript
+import { logger } from '@/utils/logger'
+import { ErrorDisplay } from '@/components/error-display'
+
+const { data, error, isLoading } = useGetData()
+
+if (error) {
+  logger.error({
+    source: 'components/my-component.tsx',
+    message: 'Failed to fetch data',
+    code: 'EXTERNAL_API_ERROR',
+    error
+  })
+  return <ErrorDisplay message="Failed to load data" />
+}
+```
+
+For critical errors, wrap in ErrorBoundary:
+```typescript
+import { ErrorBoundary } from '@/components/error-boundary'
+import { ErrorFallback } from '@/components/error-fallback'
+
+<ErrorBoundary fallback={<ErrorFallback />} source="components/data-list.tsx">
+  <DataList />
+</ErrorBoundary>
+```
+
+## Mutations
+```typescript
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+export function useUpdateUser() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: async (userData) => {
+      const response = await fetch('/api/user', {
+        method: 'PUT',
+        body: JSON.stringify(userData),
+      })
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] })
+    },
+  })
+}
+```
+
+## Configuration
+- QueryClient is already configured in `src/providers/ReactQueryProvider.tsx`
+- Configure `staleTime` and `gcTime` based on data characteristics
+- Use optimistic updates where appropriate
+
+## Reference Examples
+- Query hook: `src/hooks/useGetMessage.ts`
+- Component with error handling: `src/components/ReactQueryExample.tsx`
+- Error handling patterns: `.cursor/rules/error-handling.mdc`

@@ -1,0 +1,161 @@
+---
+description: Git workflow, conventional commits, and PR creation standards
+globs:
+  - '**/*'
+---
+
+# Git Workflow & Conventional Commits
+
+## Conventional Commit Format
+Use structured commit messages for clear history:
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+## Commit Types (Following Conventional Commits Specification)
+- **feat**: New feature (MUST be used when adding new functionality)
+- **fix**: Bug fix (MUST be used for bug fixes)
+- **docs**: Documentation changes only
+- **test**: Test additions or changes
+- **refactor**: Code refactoring without functionality changes
+- **style**: Code style changes (formatting, whitespace, etc.)
+- **chore**: Build process or auxiliary tool changes
+- **perf**: Performance improvements
+- **ci**: CI/CD configuration changes
+- **build**: Changes affecting build system or dependencies
+
+## Breaking Changes
+- Breaking changes MUST be indicated with `!` before the colon: `feat!: change API signature`
+- OR include `BREAKING CHANGE:` in the commit footer
+- Example with footer:
+  ```
+  feat: update authentication flow
+  
+  BREAKING CHANGE: authentication now requires email verification
+  ```
+
+## Examples
+```bash
+feat: add user profile avatar upload component
+
+fix: resolve authentication redirect loop on login page
+
+test: add integration tests for message API endpoint
+
+refactor: extract email validation into reusable utility
+
+docs: update README with new environment variables
+
+perf: optimize image loading with next/image priority
+```
+
+## Scope (Optional)
+Add scope for better context:
+```bash
+feat(auth): add password reset functionality
+fix(api): handle null response in message endpoint
+test(components): add tests for AuthButton component
+```
+
+## Commit Message Structure
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+## Commit Best Practices
+- Commits MUST be prefixed with a type followed by optional scope, optional `!`, and REQUIRED colon and space
+- Keep commits atomic and focused on one change
+- Write clear commit messages explaining the "why"
+- Subject MUST immediately follow the colon and space
+- Use imperative mood: "add feature" not "added feature"
+- Keep subject line under 72 characters
+- Body and footer are optional but provide context when needed
+- Reference issue numbers when applicable: `fix: resolve login bug (#123)`
+- Scope MAY be provided after type: `feat(auth): add password reset`
+
+## Pre-commit Hooks
+Husky automatically runs on pre-commit:
+- Prettier formatting
+- ESLint checks
+- Type checking
+- Tests (in CI)
+
+## Before Committing
+Run quality checks:
+```bash
+pnpm type-check  # TypeScript check
+pnpm lint        # ESLint check
+pnpm format      # Auto-format with Prettier
+pnpm test        # Run tests
+```
+
+## Branch Naming
+Use descriptive branch names:
+```bash
+feature/user-authentication
+fix/login-redirect-bug
+refactor/api-error-handling
+test/add-component-tests
+```
+
+## Pull Requests
+
+### Creating PRs via GitHub CLI
+```bash
+# Interactive mode (recommended - auto-fills from commits)
+gh pr create --fill
+
+# With custom title/body
+gh pr create --title "feat: add user profile" --body "Brief description"
+
+# Draft PR for early feedback
+gh pr create --draft
+
+# Link to issue
+gh pr create --fill --linked-issue 123
+```
+
+### PR Title Format
+Use conventional commit style:
+- `feat: add new feature`
+- `fix: resolve bug description`
+- `docs: update documentation`
+- `refactor: improve code structure`
+
+### PR Description
+Keep it concise:
+- **Why**: Problem being solved
+- **What**: Key changes (2-4 bullets)
+- **Testing**: How to verify
+- **Risk**: Impact assessment (LOW/MEDIUM/HIGH)
+
+### Before Opening PR
+```bash
+pnpm type-check  # TypeScript validation
+pnpm lint        # ESLint check
+pnpm test        # Run all tests
+```
+
+Checklist:
+- [ ] All commits follow conventional commit format
+- [ ] Quality checks pass (above commands)
+- [ ] Tests added for new logic (H/I/B coverage)
+- [ ] `.env.example` updated if env vars changed
+
+### PR Labels for Automated Releases (CD)
+Apply one label per PR to control semantic versioning:
+- **release:major** - Breaking changes (`feat!:` or `BREAKING CHANGE:`)
+- **release:minor** - New features (`feat:`)
+- **release:patch** - Bug fixes, refactors (`fix:`, `perf:`, `refactor:`)
+- **release:skip** - No version bump (`docs:`, `test:`, `ci:`, `chore:`)
+
+If multiple labels present, highest priority wins (major > minor > patch > skip)

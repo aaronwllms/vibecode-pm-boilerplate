@@ -23,9 +23,16 @@
 
 <p align="center">
   <a href="#features"><strong>Features</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
+  <a href="#quick-start"><strong>Quick Start</strong></a> ·
   <a href="#documentation"><strong>Documentation</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
+  <a href="#deployment"><strong>Deploy</strong></a> ·
+  <a href="#feedback-and-issues"><strong>Feedback</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://vercel.com/new/clone?repository-url=https://github.com/michaeltroya/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20for%20your%20project&envLink=https://app.supabase.com/project/_/settings/api&project-name=my-supanext-app&repository-name=my-supanext-app">
+    <img src="https://vercel.com/button" alt="Deploy with Vercel"/>
+  </a>
 </p>
 <br/>
 
@@ -51,42 +58,91 @@
 - ✨ Next Top Loader - Render a pleasent top loader on navigation with [nextjs-toploader](https://github.com/TheSGJ/nextjs-toploader)
 - 🔋 Lots Extras - Next Bundle Analyzer, Vercel Analytics, Vercel Geist Font
 
-## Clone and run locally
+## Quick Start
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### Option 1: Automated Setup (Recommended)
 
-2. Create a Next.js app using the Supabase Starter template npx command
-
+1. **Use this template** (click "Use this template" button on GitHub) or clone:
    ```bash
-   pnpm create next-app -e https://github.com/michaeltroya/supa-next-starter
-   # or
-   npx create-next-app -e https://github.com/michaeltroya/supa-next-starter
+   git clone https://github.com/michaeltroya/supa-next-starter.git my-project
+   cd my-project
    ```
 
-3. Use `cd` to change into the app's directory
-
+2. **Install dependencies:**
    ```bash
-   cd name-of-new-app
+   pnpm install
    ```
 
-4. Rename `.env.local.example` to `.env.local` and update the following:
-
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
-
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
-
-5. You can now run the Next.js local development server:
-
+3. **Run setup wizard:**
    ```bash
-   pnpm run dev
+   pnpm run setup-project
+   ```
+   
+   This will guide you through:
+   - Customizing project details
+   - Creating `.env.local`
+   - Setting up Supabase
+
+4. **Start developing:**
+   ```bash
+   pnpm dev
+   ```
+   
+   Visit [localhost:3000](http://localhost:3000/) 🎉
+
+> 📖 For detailed template usage instructions, see [TEMPLATE.md](TEMPLATE.md)
+
+### Option 2: Manual Setup
+
+1. **Clone and install:**
+   ```bash
+   git clone https://github.com/michaeltroya/supa-next-starter.git my-project
+   cd my-project
+   pnpm install
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+2. **Set up environment:**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local` and add your Supabase credentials:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   ```
+   
+   Get these from [Supabase Dashboard](https://app.supabase.com) → Project Settings → API
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+3. **Set up database:**
+   ```bash
+   # Install Supabase CLI (if not installed)
+   npm install -g supabase
+   
+   # Link to your project
+   supabase link --project-ref your-project-ref
+   
+   # Push migrations
+   pnpm db:push
+   ```
+
+4. **Run dev server:**
+   ```bash
+   pnpm dev
+   ```
+
+### Option 3: One-Click Deploy
+
+Deploy directly to Vercel with environment variable prompts:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/michaeltroya/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY)
+
+After deployment:
+1. Create a [Supabase project](https://app.supabase.com)
+2. Add environment variables in Vercel project settings
+3. Redeploy
+
+> 💡 **Local Supabase Development**: Check out [the docs](https://supabase.com/docs/guides/getting-started/local-development) to run Supabase locally with Docker.
 
 ## Showcase
 
@@ -97,23 +153,42 @@ Websites started using this template:
 
 # Documentation
 
+> **For AI Coding Agents**: See [AGENTS.md](AGENTS.md) for detailed setup instructions, code conventions, testing guidelines, and project structure information.
+
+> **Using as a Template**: See [TEMPLATE.md](TEMPLATE.md) for complete guide on customizing this starter for your project.
+
 ### Requirements
 
 - Node.js >= 18.17.0
-- pnpm 8
+- pnpm 8 or higher
 
-### Scripts
+### Development Scripts
 
-- `pnpm dev` — Starts the application in development mode at `http://localhost:3000`.
-- `pnpm build` — Creates an optimized production build of your application.
-- `pnpm start` — Starts the application in production mode.
-- `pnpm type-check` — Validate code using TypeScript compiler.
-- `pnpm lint` — Runs ESLint for all files in the `src` directory.
-- `pnpm format-check` — Runs Prettier and checks if any files have formatting issues.
-- `pnpm format` — Runs Prettier and formats files.
-- `pnpm test` — Runs all the jest tests in the project.
-- `pnpm test:ci` — Runs all the jest tests in the project, Jest will assume it is running in a CI environment.
-- `pnpm analyze` — Builds the project and opens the bundle analyzer.
+**Core Commands:**
+- `pnpm dev` — Start development server at `http://localhost:3000`
+- `pnpm build` — Create optimized production build
+- `pnpm start` — Start production server
+- `pnpm setup-project` — Interactive project setup wizard
+
+**Code Quality:**
+- `pnpm type-check` — Validate TypeScript code
+- `pnpm lint` — Run ESLint on all files
+- `pnpm format` — Format code with Prettier
+- `pnpm format-check` — Check code formatting
+- `pnpm test` — Run all tests
+- `pnpm test:ci` — Run tests in CI mode
+
+**Database (Supabase):**
+- `pnpm db:types` — Generate TypeScript types from database schema
+- `pnpm db:push` — Push migrations to linked Supabase project
+- `pnpm db:reset` — Reset local database and apply all migrations
+- `pnpm db:seed` — Seed database with test data
+- `pnpm supabase:start` — Start local Supabase stack
+- `pnpm supabase:stop` — Stop local Supabase stack
+- `pnpm supabase:status` — Check local Supabase status
+
+**Analysis:**
+- `pnpm analyze` — Build and open bundle analyzer
 
 ### Paths
 
@@ -126,9 +201,92 @@ import { Button } from '@/components/ui/Button'
 import avatar from '@/public/avatar.png'
 ```
 
+## Deployment
+
+### Vercel (Recommended)
+
+This starter is optimized for [Vercel](https://vercel.com):
+
+1. **One-Click Deploy:**
+   
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/michaeltroya/supa-next-starter)
+
+2. **Manual Deploy:**
+   - Push your code to GitHub
+   - Import project in Vercel
+   - Add environment variables
+   - Deploy!
+
+Vercel automatically:
+- ✅ Detects Next.js configuration
+- ✅ Sets up preview deployments for PRs
+- ✅ Configures production deployments on `main`
+- ✅ Optimizes performance
+
+### Environment Variables in Vercel
+
+Required variables:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Add these in: **Vercel Project Settings → Environment Variables**
+
+### Other Platforms
+
+While optimized for Vercel, this starter works on any platform supporting Next.js 14:
+- Netlify
+- Railway
+- AWS Amplify
+- Self-hosted with Docker
+
+## Database Setup
+
+This starter includes an example database schema in `supabase/migrations/`:
+
+### Initial Schema Features:
+- ✅ User profiles table with RLS
+- ✅ Automatic profile creation on signup
+- ✅ Updated_at timestamp triggers
+- ✅ Security policies
+- ✅ TypeScript type generation
+
+### Customizing Schema:
+
+1. **Create new migration:**
+   ```bash
+   supabase migration new add_my_table
+   ```
+
+2. **Edit SQL file:**
+   ```bash
+   # Edit: supabase/migrations/[timestamp]_add_my_table.sql
+   ```
+
+3. **Apply locally:**
+   ```bash
+   pnpm db:reset
+   ```
+
+4. **Generate types:**
+   ```bash
+   pnpm db:types
+   ```
+
+5. **Push to production:**
+   ```bash
+   pnpm db:push
+   ```
+
+See [TEMPLATE.md](TEMPLATE.md#database-setup) for detailed database setup instructions.
+
 ### Switch to Yarn/npm
 
-This starter uses pnpm by default, but this choice is yours. If you'd like to switch to Yarn/npm, delete the `pnpm-lock.yaml` file, install the dependencies with Yarn/npm, change the CI workflow, and Husky Git hooks to use Yarn/npm commands.
+This starter uses pnpm by default. To switch to Yarn/npm:
+1. Delete `pnpm-lock.yaml`
+2. Delete `node_modules/`
+3. Install with your preferred package manager
+4. Update scripts in `package.json` if needed
+5. Update Husky hooks in `.husky/`
 
 ## License
 
