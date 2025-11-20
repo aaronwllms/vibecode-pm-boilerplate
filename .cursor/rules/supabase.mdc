@@ -192,3 +192,99 @@ const supabase = createMiddlewareClient(req)
 
 ## Example Auth Pattern
 See `src/components/AuthButton.tsx` for reference implementation
+
+## Performance & Optimization
+
+### Query Optimization
+- **Indexing**: Create indexes on columns in WHERE, JOIN, ORDER BY clauses (`CREATE INDEX idx_name ON table(column)`)
+- **Avoid N+1 Queries**: Use Supabase's nested selects for relations (`.select('*, relation_table(*)')`)
+- **Pagination**: Always use `.range()` or `.limit()` for large result sets
+- **Select Specific Columns**: Avoid `select('*')` - specify only needed fields
+- **Filter Early**: Apply filters before sorting/limiting to reduce data processing
+
+### Caching & Connection Management
+- Leverage TanStack Query for client-side caching (already configured)
+- Always cleanup real-time subscriptions in useEffect return function
+- Connection pooling is handled automatically by Supabase
+- Consider edge caching (Vercel) or Redis for session/rate-limiting data
+
+### Load Testing & Monitoring
+- Test migrations in staging before production
+- Use k6 for load testing before major releases
+- Monitor slow queries in Supabase Dashboard
+- Contact support 48h before anticipated traffic spikes
+
+## Code Organization Patterns
+
+### Repository Pattern (Recommended)
+- Abstract database operations into service layer (`src/services/`)
+- Keep database logic separate from UI components
+- Create repository files per domain: `posts-repository.ts`, `users-repository.ts`, `auth-service.ts`
+- Export functions that encapsulate Supabase queries
+- Handle errors within repositories before returning to components
+
+### Business Logic Placement
+- ✅ **Application Code**: Complex business rules, multi-step workflows, validation
+- ✅ **Database Policies (RLS)**: Simple row-level access control
+- ❌ **Supabase Edge Functions**: Avoid over-reliance to prevent vendor lock-in
+- Keep most logic in application code for testability and portability
+
+## Anti-Patterns to Avoid
+
+### ❌ Direct Database Access from UI Components
+- Never call Supabase directly from UI components
+- Use custom hooks (TanStack Query) or repository functions
+- Keep data fetching logic testable and reusable
+
+### ❌ Poor Query Performance
+- Don't fetch all columns with `select('*')` - specify needed fields
+- Always add filters, limits, and pagination
+- Avoid multiple sequential queries when joins are available
+
+### ❌ Skipping Row Level Security (RLS)
+- Always enable RLS on tables with user data
+- Don't rely solely on application-level authorization
+- Test RLS policies thoroughly before production
+- Use `auth.uid()` in policies for user-scoped access
+
+### ❌ Business Logic in Database Functions
+- Keep business logic in application code for testability
+- Use Supabase Functions only for performance-critical operations
+- Avoid vendor lock-in by minimizing edge function reliance
+
+### ❌ Manual Migration Management
+- Always use `supabase migration new` - never manually create timestamped files
+- Test all migrations locally before remote push
+
+## Testing Supabase Integrations
+
+### Testing Strategy
+- **Unit Tests**: Mock Supabase client at module boundary (`jest.mock('@/utils/supabase')`)
+- **Integration Tests**: Use local Supabase or test database for API routes
+- **RLS Policy Tests**: Use local Supabase to validate row-level security
+- **Auth Flow Tests**: Mock auth state for protected route testing
+
+### When to Use Test Database vs Mocks
+- **Mocks**: Fast unit tests, component tests, isolated logic
+- **Local Supabase**: Integration tests, migration validation, RLS testing, E2E tests
+- Mock Supabase client by returning objects with chainable methods that resolve to `{ data, error }`
+- See `testing.mdc` for detailed mocking patterns
+
+## Production Operations
+
+### Monitoring
+- Monitor slow queries in Supabase Dashboard (Query Performance tab)
+- Set up alerts for connection pool exhaustion
+- Track API response times with Vercel Analytics
+- Review and optimize query patterns regularly
+
+### Backup & Recovery
+- Supabase provides daily automatic backups
+- Enable Point-in-Time Recovery (PITR) for production databases
+- Test restore procedures in staging
+- Document recovery runbook
+
+### Capacity Planning
+- Monitor database size and connection usage
+- Plan upgrades proactively based on growth trends
+- Contact Supabase support 48h before anticipated traffic spikes
