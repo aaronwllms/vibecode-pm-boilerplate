@@ -148,22 +148,19 @@ If below threshold, add targeted tests to increase coverage.
 - Always link to a GitHub issue when quarantining tests
 
 ## Examples
-- Unit tests: `src/utils/format-date.unit.test.ts`, `src/hooks/use-toggle.unit.test.ts`
+- Unit tests: `src/utils/logger.unit.test.ts`, `src/app/test-examples/counter.unit.test.tsx`, `src/app/test-examples/page.unit.test.tsx`
 - Integration tests: `src/components/ReactQueryExample.integration.test.tsx`, `src/app/api/message/route.integration.test.ts`
-- Simple tests: `src/app/test-examples/page.test.tsx`, `src/app/test-examples/counter.test.tsx`
 
 ## File Naming Conventions
 Test files should be co-located with source files using these naming patterns:
 
 - **Unit tests**: `.unit.test.tsx` or `.unit.test.ts`
-  - Pure functions, isolated component logic, custom hooks without external dependencies
-  - Example: `utils/format-date.unit.test.ts`, `hooks/use-toggle.unit.test.ts`
+  - Pure functions, isolated component logic, custom hooks, components without external dependencies
+  - Example: `utils/format-date.unit.test.ts`, `hooks/use-toggle.unit.test.ts`, `components/counter.unit.test.tsx`
 
 - **Integration tests**: `.integration.test.tsx` or `.integration.test.ts`
   - Components with external dependencies, API routes, auth flows, database interactions
   - Example: `components/auth-form.integration.test.tsx`, `app/api/users/route.integration.test.ts`
-
-- **Simple `.test.tsx` or `.test.ts`**: Allowed for smaller components/utilities where the distinction isn't critical
 
 The file naming helps identify test scope at a glance and organize test runs (e.g., running only unit tests for quick feedback loops).
 
