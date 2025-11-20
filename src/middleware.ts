@@ -11,19 +11,14 @@ export async function middleware(request: NextRequest) {
     // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
     await supabase.auth.getSession()
 
-    // Add pathname to headers for server components
-    response.headers.set('x-pathname', request.nextUrl.pathname)
-
     return response
   } catch (e) {
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.
-    const response = NextResponse.next({
+    return NextResponse.next({
       request: { headers: request.headers },
     })
-    response.headers.set('x-pathname', request.nextUrl.pathname)
-    return response
   }
 }
 

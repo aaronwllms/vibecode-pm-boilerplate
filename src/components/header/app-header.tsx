@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { cookies, headers } from 'next/headers'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
 import { NavLinks } from './nav-links'
@@ -11,8 +11,6 @@ import type { Profile } from '@/types/profile'
 export async function AppHeader() {
   const cookieStore = cookies()
   const supabase = createServerClient(cookieStore)
-  const headersList = headers()
-  const pathname = headersList.get('x-pathname') || ''
 
   const {
     data: { user },
@@ -20,29 +18,12 @@ export async function AppHeader() {
 
   let profile: Profile | null = null
 
-  // Skip profile validation on login page to prevent redirect loops
-  if (user && !pathname.includes('/login')) {
-    const { data, error } = await supabase
+  if (user) {
+    const { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()
-
-    if (error) {
-      // Profile should always exist for authenticated users
-      // If it doesn't, this is a critical system error
-      console.error('CRITICAL: User authenticated but profile missing', {
-        userId: user.id,
-        email: user.email,
-        error: error.message,
-      })
-      
-      // Sign out the user since their account is in an invalid state
-      const cookieStore = cookies()
-      const supabase = createServerClient(cookieStore)
-      await supabase.auth.signOut()
-      return redirect('/login?message=Account setup incomplete. Please contact support.')
-    }
 
     profile = data
   }
