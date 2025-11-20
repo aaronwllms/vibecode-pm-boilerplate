@@ -24,7 +24,15 @@
     "prepare": "husky install",
     "test": "jest",
     "test:ci": "jest --ci",
-    "analyze": "ANALYZE=true pnpm build"
+    "analyze": "ANALYZE=true pnpm build",
+    "setup-project": "node scripts/setup-project.js",
+    "db:types": "supabase gen types typescript --local > src/types/database.types.ts",
+    "db:push": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:seed": "supabase db seed",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^14.0.4",
