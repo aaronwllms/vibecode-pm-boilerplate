@@ -1,0 +1,257 @@
+---
+description: Accessibility (a11y) patterns and WCAG compliance guidelines
+globs:
+  - 'src/components/**/*.tsx'
+  - 'src/app/**/*.tsx'
+---
+
+# Accessibility (a11y) Best Practices
+
+## Built-in Accessibility with shadcn/ui
+shadcn/ui components have **built-in accessibility** via Radix UI:
+- Automatic ARIA attributes
+- Keyboard navigation support
+- Focus management
+- Screen reader compatibility
+
+## Maintaining Accessibility When Customizing
+
+**When customizing shadcn/ui components, preserve accessibility:**
+```typescript
+// Good: Preserve Radix UI's accessibility props
+<Button {...props} className={cn(baseStyles, className)}>
+  {children}
+</Button>
+
+// Bad: Don't override accessibility attributes
+<Button role="something-else"> {/* Don't do this */}
+  {children}
+</Button>
+```
+
+## Custom Component Accessibility
+
+### Semantic HTML
+Use appropriate HTML elements for their intended purpose:
+```typescript
+// Good: Semantic elements
+<button onClick={handleClick}>Submit</button>
+<nav>Navigation content</nav>
+<header>Header content</header>
+<main>Main content</main>
+<footer>Footer content</footer>
+
+// Bad: Non-semantic divs
+<div onClick={handleClick}>Submit</div>
+<div>Navigation content</div>
+```
+
+### Heading Hierarchy
+Maintain proper heading structure (h1 -> h2 -> h3):
+```typescript
+// Good: Logical hierarchy
+<h1>Page Title</h1>
+  <h2>Section Title</h2>
+    <h3>Subsection Title</h3>
+
+// Bad: Skipping levels
+<h1>Page Title</h1>
+  <h3>Section Title</h3> {/* Skipped h2 */}
+```
+
+### ARIA Labels and Descriptions
+Add ARIA attributes when semantic HTML isn't enough:
+```typescript
+// Icon button without text
+<button aria-label="Close dialog" onClick={onClose}>
+  <X className="h-4 w-4" />
+</button>
+
+// Decorative images
+<img src="/decoration.png" alt="" role="presentation" />
+
+// Complex widgets
+<div
+  role="tablist"
+  aria-label="Account settings"
+>
+  {/* Tab content */}
+</div>
+```
+
+### Keyboard Navigation
+Ensure all interactive elements work with keyboard:
+```typescript
+// Good: Handles both click and keyboard
+<div
+  role="button"
+  tabIndex={0}
+  onClick={handleAction}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleAction()
+    }
+  }}
+>
+  Custom Button
+</div>
+
+// Better: Use native button element
+<button onClick={handleAction}>
+  Native Button
+</button>
+```
+
+**Important keyboard shortcuts:**
+- `Tab` - Navigate forward
+- `Shift + Tab` - Navigate backward
+- `Enter` - Activate buttons/links
+- `Space` - Activate buttons
+- `Escape` - Close dialogs/modals
+- Arrow keys - Navigate within components (lists, tabs, etc.)
+
+### Color Contrast
+Maintain WCAG AA minimum contrast ratios:
+- Normal text: 4.5:1
+- Large text (18pt+ or 14pt+ bold): 3:1
+- UI components and graphics: 3:1
+
+```typescript
+// Good: Sufficient contrast
+<div className="bg-blue-600 text-white">
+  High contrast text
+</div>
+
+// Be careful with subtle colors
+<div className="bg-gray-100 text-gray-400">
+  {/* May not meet contrast requirements */}
+</div>
+```
+
+### Focus Indicators
+Ensure visible focus states for keyboard navigation:
+```typescript
+// Good: Clear focus indicator
+<button className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+  Accessible Button
+</button>
+
+// Tailwind default focus styles are accessible
+<button className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+  Button with focus
+</button>
+```
+
+### Screen Reader Support
+Provide context for screen reader users:
+```typescript
+// Loading state
+<button disabled aria-busy="true">
+  <Loader2 className="animate-spin" />
+  <span className="sr-only">Loading...</span>
+</button>
+
+// Live regions for dynamic content
+<div aria-live="polite" aria-atomic="true">
+  {statusMessage}
+</div>
+
+// Visually hidden but screen reader accessible
+<span className="sr-only">
+  Additional context for screen readers
+</span>
+```
+
+### Form Accessibility
+```typescript
+// Good: Proper form labeling
+<div>
+  <label htmlFor="email">Email Address</label>
+  <input
+    id="email"
+    type="email"
+    aria-describedby="email-help"
+    aria-invalid={hasError}
+  />
+  <span id="email-help">We'll never share your email</span>
+  {hasError && (
+    <span role="alert" className="text-red-600">
+      Please enter a valid email
+    </span>
+  )}
+</div>
+```
+
+## Accessibility Testing
+
+### Manual Testing Checklist
+- ✅ Can be navigated with keyboard only (no mouse)
+- ✅ Has visible focus indicators on all interactive elements
+- ✅ Includes descriptive labels and aria-labels where needed
+- ✅ Maintains color contrast ratios (WCAG AA minimum)
+- ✅ Works with screen readers (test with NVDA, JAWS, VoiceOver)
+- ✅ Provides error feedback accessibly (role="alert")
+- ✅ Forms have proper labels and error states
+- ✅ Images have appropriate alt text
+- ✅ Headings follow logical hierarchy
+
+### Testing Tools
+- **Browser DevTools**: Lighthouse accessibility audit
+- **axe DevTools**: Browser extension for accessibility testing
+- **WAVE**: Web accessibility evaluation tool
+- **Screen readers**: NVDA (Windows), JAWS (Windows), VoiceOver (macOS/iOS)
+- **Keyboard only**: Unplug your mouse and try navigating
+
+## WCAG 2.1 AA Compliance
+
+Key requirements for Level AA:
+1. **Perceivable**: Information must be presentable to users
+   - Provide text alternatives for images
+   - Provide captions for videos
+   - Content is distinguishable (color contrast)
+
+2. **Operable**: UI components must be operable
+   - Keyboard accessible
+   - Enough time to read content
+   - No seizure-inducing content
+   - Navigable (clear focus order)
+
+3. **Understandable**: Information must be understandable
+   - Readable text
+   - Predictable behavior
+   - Input assistance (labels, errors)
+
+4. **Robust**: Content works with assistive technologies
+   - Valid HTML
+   - Proper ARIA usage
+
+## Common Accessibility Patterns
+
+### Skip Links
+```typescript
+// Allow keyboard users to skip navigation
+<a
+  href="#main-content"
+  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+>
+  Skip to main content
+</a>
+
+<main id="main-content">
+  {/* Main content */}
+</main>
+```
+
+### Modal Dialogs
+```typescript
+// Trap focus within modal
+// Restore focus when closed
+// Close on Escape key
+// Use shadcn Dialog component (has this built-in)
+```
+
+## Resources
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Radix UI Accessibility](https://www.radix-ui.com/primitives/docs/overview/accessibility)
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+- [A11y Project Checklist](https://www.a11yproject.com/checklist/)

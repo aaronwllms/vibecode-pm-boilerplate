@@ -1,0 +1,61 @@
+---
+description: Supabase integration patterns using @supabase/ssr
+globs:
+  - 'src/**/*.ts'
+  - 'src/**/*.tsx'
+  - 'src/utils/supabase.ts'
+  - 'src/middleware.ts'
+---
+
+# Supabase Integration (@supabase/ssr)
+
+## Context-Specific Client Usage
+
+### Client Components
+```typescript
+import { createClient } from '@/utils/supabase'
+
+// Use in client components with 'use client' directive
+const supabase = createClient()
+```
+
+### Server Components
+```typescript
+import { createServerClient } from '@/utils/supabase'
+
+// Use in Server Components and Server Actions
+const supabase = await createServerClient()
+```
+
+### API Route Handlers
+```typescript
+import { createRouteHandlerClient } from '@/utils/supabase'
+
+// Use in route.ts files
+const supabase = createRouteHandlerClient()
+```
+
+### Middleware
+```typescript
+import { createMiddlewareClient } from '@/utils/supabase'
+
+// Use in middleware.ts
+const supabase = createMiddlewareClient(req)
+```
+
+## Best Practices
+- Always handle authentication errors gracefully
+- Implement proper TypeScript types for database queries
+- Use Supabase Row Level Security (RLS) policies for data protection
+- Handle auth state changes reactively
+- Reference existing patterns in `src/app/api/auth/callback/route.ts`
+
+## Security
+- Never commit Supabase keys to version control
+- Store credentials in `.env.local`
+- Use environment variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Implement RLS policies for all tables
+- Validate user inputs before queries
+
+## Example Auth Pattern
+See `src/components/AuthButton.tsx` for reference implementation

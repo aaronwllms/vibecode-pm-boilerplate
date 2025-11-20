@@ -1,0 +1,76 @@
+---
+description: TanStack Query v5 patterns for client-side data fetching
+globs:
+  - 'src/hooks/**/*.ts'
+  - 'src/components/**/*.tsx'
+  - 'src/providers/ReactQueryProvider.tsx'
+---
+
+# TanStack Query v5 (React Query) Patterns
+
+## When to Use
+- Client-side data fetching and caching
+- Real-time data that needs frequent updates
+- Data with complex caching requirements
+- Client-side mutations with optimistic updates
+
+## Custom Hooks Pattern
+Create custom hooks in `src/hooks/` for all queries:
+
+```typescript
+import { useQuery } from '@tanstack/react-query'
+
+export function useGetMessage() {
+  return useQuery({
+    queryKey: ['message'],
+    queryFn: async () => {
+      const response = await fetch('/api/message')
+      if (!response.ok) throw new Error('Failed to fetch')
+      return response.json()
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
+}
+```
+
+## Query Key Conventions
+- Use descriptive arrays: `['resource', id]` or `['resource', 'list', filters]`
+- Examples:
+  - `['user', userId]`
+  - `['posts', 'list', { status: 'published' }]`
+  - `['post', postId, 'comments']`
+
+## Error Handling
+- Implement error boundaries for query errors
+- Use `onError` callbacks for specific error handling
+- Provide user-friendly error messages
+
+## Mutations
+```typescript
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+export function useUpdateUser() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: async (userData) => {
+      const response = await fetch('/api/user', {
+        method: 'PUT',
+        body: JSON.stringify(userData),
+      })
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] })
+    },
+  })
+}
+```
+
+## Configuration
+- QueryClient is already configured in `src/providers/ReactQueryProvider.tsx`
+- Configure `staleTime` and `gcTime` based on data characteristics
+- Use optimistic updates where appropriate
+
+## Reference
+See `src/hooks/useGetMessage.ts` and `src/components/ReactQueryExample.tsx` for examples

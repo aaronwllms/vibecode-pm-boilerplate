@@ -1,0 +1,84 @@
+---
+description: Testing conventions with Jest, React Testing Library, and MSW v2
+globs:
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - 'src/mocks/**/*.ts'
+  - 'src/test/**/*.tsx'
+---
+
+# Testing with Jest + React Testing Library + MSW v2
+
+## Testing Philosophy
+- Write tests for components with logic or user interactions
+- Test user behavior and outcomes, not implementation details
+- Follow Arrange-Act-Assert pattern
+- Use descriptive test names that explain expected behavior
+- Aim for meaningful coverage, not just high percentages
+
+## Test Structure
+```typescript
+import { render, screen, waitFor } from '@/test/test-utils'
+import userEvent from '@testing-library/user-event'
+
+describe('ComponentName', () => {
+  it('should describe the expected behavior', async () => {
+    // Arrange
+    render(<Component prop="value" />)
+    
+    // Act
+    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
+    
+    // Assert
+    await waitFor(() => {
+      expect(screen.getByText(/success/i)).toBeInTheDocument()
+    })
+  })
+})
+```
+
+## Import from Test Utils
+Always use the custom render function that includes providers:
+
+```typescript
+import { render, screen, waitFor } from '@/test/test-utils'
+```
+
+This automatically wraps components with:
+- ReactQueryProvider
+- ThemeProvider
+- Other necessary context providers
+
+## Mock Service Worker (MSW v2)
+- Mock API calls in `src/mocks/handlers.ts`
+- MSW is configured for testing only (not in production)
+- Server setup in `src/mocks/server.ts`
+
+Example handler:
+```typescript
+import { http, HttpResponse } from 'msw'
+
+export const handlers = [
+  http.get('/api/message', () => {
+    return HttpResponse.json({ message: 'Hello from mock' })
+  }),
+]
+```
+
+## Running Tests
+- All tests: `pnpm test`
+- CI mode: `pnpm test:ci`
+- Watch mode: `pnpm test -- --watch`
+- Run before committing
+
+## Examples
+- Component tests: `src/components/ReactQueryExample.test.tsx`
+- Page tests: `src/app/test-examples/page.test.tsx`
+- Counter example: `src/app/test-examples/counter.test.tsx`
+
+## Best Practices
+- Co-locate test files with source files
+- Use `.test.tsx` or `.test.ts` extension
+- Mock Supabase client when necessary
+- Test loading states and error states
+- Test accessibility (screen reader support, keyboard navigation)
