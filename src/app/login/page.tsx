@@ -3,6 +3,7 @@ import { headers, cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
 import { logger } from '@/utils/logger'
+import { CriticalErrorBanner } from '@/components/critical-error-banner'
 
 // Helper to check if error is a Next.js redirect
 function isRedirectError(error: unknown): boolean {
@@ -20,6 +21,11 @@ export default function Login({
 }: {
   searchParams: { message: string }
 }) {
+  // Detect if this is a critical error
+  const isCriticalError =
+    searchParams?.message?.includes('Account setup incomplete')
+  const isRegularMessage = searchParams?.message && !isCriticalError
+
   const signIn = async (formData: FormData) => {
     'use server'
 
@@ -165,6 +171,14 @@ export default function Login({
         Back
       </Link>
 
+      {/* Critical Error Banner */}
+      {isCriticalError && (
+        <CriticalErrorBanner
+          message={searchParams.message}
+          errorCode="PROFILE_MISSING"
+        />
+      )}
+
       <form
         className="flex w-full flex-1 flex-col justify-center gap-2 text-foreground animate-in"
         action={signIn}
@@ -197,7 +211,7 @@ export default function Login({
         >
           Sign Up
         </button>
-        {searchParams?.message && (
+        {isRegularMessage && (
           <p className="mt-4 bg-foreground/10 p-4 text-center text-foreground">
             {searchParams.message}
           </p>
