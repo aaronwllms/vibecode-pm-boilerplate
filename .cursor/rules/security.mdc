@@ -1,0 +1,498 @@
+---
+description: Security patterns and vulnerability prevention for Next.js + Supabase
+globs:
+  - 'src/**/*.ts'
+  - 'src/**/*.tsx'
+  - 'src/middleware.ts'
+  - 'src/app/api/**/*.ts'
+  - 'supabase/migrations/**/*.sql'
+---
+
+# Security Guidelines
+
+## Core Principles
+- **Defense in Depth**: Multiple security layers (client + server validation + RLS)
+- **Never Trust Client Input**: Always validate and sanitize on the server
+- **Fail Securely**: Errors deny access by default
+- **Least Privilege**: Grant minimum permissions necessary
+
+## Authentication & Authorization
+
+### Server-Side Auth Check (REQUIRED)
+**Always verify auth on the server** - never trust client-side checks:
+
+```typescript
+// ✅ CORRECT: Server-side auth
+import { createServerClient } from '@/utils/supabase'
+import { cookies } from 'next/headers'
+
+export async function GET() {
+  const supabase = createServerClient(cookies())
+  const { data: { user }, error } = await supabase.auth.getUser()
+  
+  if (error || !user) {
+    return NextResponse.json(
+      { success: false, error: { message: 'Unauthorized', code: 'UNAUTHORIZED' } },
+      { status: 401 }
+    )
+  }
+  // Proceed with authenticated logic
+}
+
+// ❌ WRONG: Trusting client headers
+const userId = request.headers.get('x-user-id') // Attacker can fake this!
+```
+
+### Authorization Pattern (Resource Ownership)
+```typescript
+// Verify user owns the resource
+const { data: resource } = await supabase
+  .from('posts')
+  .select('user_id')
+  .eq('id', resourceId)
+  .single()
+
+if (resource?.user_id !== user.id) {
+  return NextResponse.json(
+    { success: false, error: { message: 'Forbidden', code: 'FORBIDDEN' } },
+    { status: 403 }
+  )
+}
+```
+
+### Server Actions Protection
+```typescript
+'use server'
+
+export async function deletePost(postId: string) {
+  const supabase = createServerClient(cookies())
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) throw new Error('Unauthorized')
+  
+  // Verify ownership
+  const { data: post } = await supabase
+    .from('posts')
+    .select('user_id')
+    .eq('id', postId)
+    .single()
+  
+  if (post?.user_id !== user.id) throw new Error('Forbidden')
+  
+  // Proceed with deletion
+}
+```
+
+### Auth Error Handling
+```typescript
+// ❌ WRONG: Leaks user existence
+if (!user) return { error: 'User john@example.com does not exist' }
+
+// ✅ CORRECT: Generic message
+if (!user) return { error: 'Invalid credentials' }
+```
+
+## Input Validation
+
+### Zod Validation (REQUIRED for all API inputs)
+```typescript
+import { z } from 'zod'
+
+const CreatePostSchema = z.object({
+  title: z.string().min(1).max(200),
+  content: z.string().min(1).max(10000),
+  tags: z.array(z.string()).max(10).optional(),
+  published: z.boolean().default(false),
+})
+
+export async function POST(request: Request) {
+  const body = await request.json()
+  const parsed = CreatePostSchema.safeParse(body)
+  
+  if (!parsed.success) {
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: { 
+          message: 'Invalid input', 
+          code: 'VALIDATION_ERROR',
+          details: parsed.error.errors
+        } 
+      },
+      { status: 400 }
+    )
+  }
+  
+  const { title, content, tags, published } = parsed.data
+  // Use validated data
+}
+```
+
+### Common Zod Patterns
+```typescript
+z.string().email()                    // Email validation
+z.string().url()                      // URL validation
+z.string().uuid()                     // UUID validation
+z.string().regex(/^[a-z0-9-]+$/)     // Alphanumeric only (slugs)
+z.enum(['draft', 'published'])        // Limit to known values
+```
+
+### SQL Injection Prevention
+```typescript
+// ✅ SAFE: Supabase parameterizes automatically
+await supabase.from('posts').select('*').eq('user_id', userId)
+
+// ❌ NEVER: Raw SQL string concatenation
+const query = `SELECT * FROM posts WHERE user_id = '${userId}'` // DANGEROUS!
+```
+
+### XSS Prevention
+```typescript
+// ✅ SAFE: React escapes automatically
+<div>{userInput}</div>
+
+// ⚠️ DANGEROUS: Only use with sanitization
+import DOMPurify from 'isomorphic-dompurify'
+const sanitized = DOMPurify.sanitize(userHtml)
+<div dangerouslySetInnerHTML={{ __html: sanitized }} />
+```
+
+## Supabase Row Level Security (RLS)
+
+### Enable RLS on All Tables (MANDATORY)
+**Without RLS, anyone with the anon key can read/write ALL data.**
+
+```sql
+CREATE TABLE posts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can only read their own posts
+CREATE POLICY "Users can read own posts"
+ON posts FOR SELECT
+TO authenticated
+USING (auth.uid() = user_id);
+
+-- Policy: Users can only insert their own posts
+CREATE POLICY "Users can insert own posts"
+ON posts FOR INSERT
+TO authenticated
+WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can only update their own posts
+CREATE POLICY "Users can update own posts"
+ON posts FOR UPDATE
+TO authenticated
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can only delete their own posts
+CREATE POLICY "Users can delete own posts"
+ON posts FOR DELETE
+TO authenticated
+USING (auth.uid() = user_id);
+```
+
+### Public Read Pattern
+```sql
+-- Anyone can read published posts
+CREATE POLICY "Anyone can read published posts"
+ON posts FOR SELECT
+TO anon, authenticated
+USING (published = true);
+```
+
+### Service Role Key (EXTREME CAUTION)
+```typescript
+// ❌ NEVER: Service role key in client code
+const supabase = createClient(url, SERVICE_ROLE_KEY) // DANGEROUS!
+
+// ✅ ONLY in secure server contexts (API routes, server actions)
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!, // From .env.local only
+  { auth: { persistSession: false } }
+)
+// Use sparingly for admin operations only
+```
+
+## Data Protection
+
+### DTOs (Data Transfer Objects)
+**Never expose raw database records:**
+
+```typescript
+// ❌ WRONG: Exposing raw record
+const { data: user } = await supabase.from('users').select('*').single()
+return NextResponse.json({ user }) // Includes password_hash!
+
+// ✅ CORRECT: Explicit DTO
+interface UserDTO {
+  id: string
+  email: string
+  display_name: string
+  avatar_url: string | null
+}
+
+const { data: user } = await supabase
+  .from('users')
+  .select('id, email, display_name, avatar_url')
+  .single()
+
+const userDTO: UserDTO = {
+  id: user.id,
+  email: user.email,
+  display_name: user.display_name,
+  avatar_url: user.avatar_url,
+}
+
+return NextResponse.json({ success: true, data: userDTO })
+```
+
+### Never Expose These Fields
+- `password_hash`, password-related fields
+- `reset_token`, `verification_token`, any tokens
+- `internal_notes`, `admin_notes`, internal flags
+- `ip_address`, `user_agent` (PII)
+- Payment details, API keys, secrets
+- Other users' email or PII (unless explicitly allowed)
+
+### Environment Variables
+```bash
+# .env.local (NEVER commit - add to .gitignore)
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx  # Safe with RLS
+SUPABASE_SERVICE_ROLE_KEY=eyJxxx     # NEVER expose to client
+STRIPE_SECRET_KEY=sk_xxx             # Server-only
+
+# Only use NEXT_PUBLIC_ prefix for values safe to expose to browsers
+```
+
+**Rules:**
+- Never commit `.env.local`
+- `NEXT_PUBLIC_*` = exposed to browser (public data only)
+- Service role keys, API secrets = NEVER use `NEXT_PUBLIC_` prefix
+- Rotate secrets quarterly minimum
+
+## Next.js Security
+
+### Middleware Auth
+```typescript
+export async function middleware(request: NextRequest) {
+  const { supabase, response } = createMiddlewareClient(request)
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  // Protect authenticated routes
+  if (request.nextUrl.pathname.startsWith('/dashboard') && !session) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+  
+  return response
+}
+```
+
+### Open Redirect Prevention
+```typescript
+// ❌ VULNERABLE: User-controlled redirect
+const redirectUrl = request.nextUrl.searchParams.get('redirect')
+return NextResponse.redirect(redirectUrl) // Can redirect to evil.com!
+
+// ✅ SAFE: Validate same-origin only
+function isSafeRedirect(url: string, baseUrl: string): boolean {
+  try {
+    const parsed = new URL(url, baseUrl)
+    return parsed.origin === new URL(baseUrl).origin
+  } catch {
+    return false
+  }
+}
+
+const redirectUrl = request.nextUrl.searchParams.get('redirect') || '/'
+const safeUrl = isSafeRedirect(redirectUrl, request.url) ? redirectUrl : '/'
+return NextResponse.redirect(new URL(safeUrl, request.url))
+```
+
+### CORS Configuration
+```typescript
+// Only allow specific origins
+const allowedOrigins = [
+  'https://yourdomain.com',
+  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '',
+].filter(Boolean)
+
+const origin = request.headers.get('origin')
+if (origin && allowedOrigins.includes(origin)) {
+  response.headers.set('Access-Control-Allow-Origin', origin)
+}
+
+// ❌ NEVER: Wildcard on authenticated endpoints
+response.headers.set('Access-Control-Allow-Origin', '*') // DANGEROUS!
+```
+
+### Safe Error Handling
+```typescript
+// ❌ WRONG: Exposing stack traces
+catch (error) {
+  return NextResponse.json({ error: error.message, stack: error.stack })
+}
+
+// ✅ CORRECT: Log server-side, return generic error
+catch (error) {
+  console.error('API error:', error) // Server logs only
+  return NextResponse.json(
+    { success: false, error: { message: 'Internal server error', code: 'INTERNAL_ERROR' } },
+    { status: 500 }
+  )
+}
+```
+
+## Common Vulnerabilities
+
+### Broken Access Control
+```typescript
+// ❌ VULNERABLE: No authorization check
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  await supabase.from('posts').delete().eq('id', params.id)
+  // Any user can delete any post!
+}
+
+// ✅ SECURE: Verify ownership first
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  const supabase = createServerClient(cookies())
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  
+  const { data: post } = await supabase
+    .from('posts')
+    .select('user_id')
+    .eq('id', params.id)
+    .single()
+  
+  if (!post || post.user_id !== user.id) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+  
+  await supabase.from('posts').delete().eq('id', params.id)
+  return NextResponse.json({ success: true })
+}
+```
+
+### SSRF (Server-Side Request Forgery)
+```typescript
+// ❌ VULNERABLE: User-controlled URL
+const url = request.body.url
+const response = await fetch(url) // Can access internal services!
+
+// ✅ SAFE: Whitelist domains
+const ALLOWED_DOMAINS = ['api.example.com']
+
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    if (['localhost', '127.0.0.1', '::1'].includes(parsed.hostname)) return false
+    return ALLOWED_DOMAINS.includes(parsed.hostname)
+  } catch {
+    return false
+  }
+}
+```
+
+## Security Testing
+
+### Test Auth Boundaries
+```typescript
+describe('POST /api/posts', () => {
+  it('should reject unauthenticated requests', async () => {
+    const response = await fetch('/api/posts', {
+      method: 'POST',
+      body: JSON.stringify({ title: 'Test' }),
+    })
+    expect(response.status).toBe(401)
+  })
+  
+  it('should reject invalid input', async () => {
+    const response = await fetch('/api/posts', {
+      method: 'POST',
+      headers: { Cookie: authenticatedSession },
+      body: JSON.stringify({ title: '' }), // Invalid
+    })
+    expect(response.status).toBe(400)
+  })
+})
+```
+
+### Test Authorization
+```typescript
+it('should not allow deleting another user\'s post', async () => {
+  const response = await fetch(`/api/posts/${otherUsersPostId}`, {
+    method: 'DELETE',
+    headers: { Cookie: authenticatedSession },
+  })
+  expect(response.status).toBe(403)
+})
+```
+
+## Security Checklists
+
+### Pre-Commit Checklist
+Before committing code with user data or auth:
+- [ ] All API inputs validated with Zod schemas
+- [ ] Auth checks present for protected routes/actions
+- [ ] Authorization checks verify resource ownership
+- [ ] No sensitive data in responses (use DTOs)
+- [ ] No secrets in code (use environment variables)
+- [ ] RLS enabled and tested for new tables
+- [ ] Error messages don't leak sensitive info
+- [ ] No raw SQL string concatenation
+- [ ] Security tests written (auth, authz, validation)
+
+### New API Endpoint Checklist
+1. Add Zod schema for input validation
+2. Add auth check if protected
+3. Add authorization check (resource ownership)
+4. Create DTO for response (no raw DB types)
+5. Wrap in try/catch with safe error handling
+6. Write security tests
+
+### New Database Table Checklist
+1. Enable RLS immediately (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`)
+2. Create policies for SELECT, INSERT, UPDATE, DELETE
+3. Test policies with multiple users
+4. Never expose service role key to client
+
+### New Server Action Checklist
+1. Add auth check at the start
+2. Validate inputs with Zod
+3. Check authorization (ownership/permissions)
+4. Handle errors securely
+
+### Security Testing Checklist
+For every protected endpoint:
+- [ ] Test without auth (401)
+- [ ] Test with wrong user (403)
+- [ ] Test with invalid input (400)
+- [ ] Test can't access others' data
+- [ ] Verify no sensitive data in responses
+
+## Quick Reference
+
+### Standard Error Codes
+- `VALIDATION_ERROR` - Invalid input (400)
+- `UNAUTHORIZED` - Not authenticated (401)
+- `FORBIDDEN` - Authenticated but no permission (403)
+- `NOT_FOUND` - Resource doesn't exist (404)
+- `INTERNAL_ERROR` - Server error (500)
+
+### Resources
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Supabase RLS Docs](https://supabase.com/docs/guides/auth/row-level-security)
+- [Next.js Security](https://nextjs.org/docs/app/building-your-application/configuring/security-headers)

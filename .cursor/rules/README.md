@@ -64,9 +64,19 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 ### 🔐 `supabase.mdc`
 **Applies to:** All source files, utils, middleware
 - Context-specific Supabase client usage
-- Authentication patterns
-- Security best practices (RLS, environment variables)
+- Migration safety protocols and database operations
+- Client creation patterns for different Next.js contexts
 - Integration with @supabase/ssr
+
+### 🔒 `security.mdc`
+**Applies to:** All source files, API routes, middleware, migrations
+- Authentication and authorization patterns
+- Input validation with Zod (required for all API inputs)
+- Supabase Row Level Security (RLS) policies and testing
+- Data protection and DTO patterns
+- Common vulnerabilities (OWASP Top 10) with examples
+- Next.js-specific security (CSRF, open redirects, CORS)
+- Security testing patterns and checklists
 
 ### 🔄 `react-tanstack-query.mdc`
 **Applies to:** Hooks and components (`src/hooks/**/*`, `src/components/**/*`)
@@ -120,13 +130,38 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - Pre-commit hooks and quality checks
 - Branch naming conventions
 
+### 📝 `pm-collaboration.mdc`
+**Applies to:** Always active
+- PM + AI Developer partnership mode
+- Communication style preferences
+- Technical decision-making process
+- Testing and validation approach
+- Collaboration principles
+
+### 📐 `general-conventions.mdc`
+**Applies to:** Always active
+- Date & time handling conventions
+- ISO 8601 format standards
+- Environment awareness
+- Migration file timestamp formats
+
+### 🌐 `api-development.mdc`
+**Applies to:** API routes and contracts (`src/app/api/**/*`, `src/lib/api-contracts/**/*`)
+- RESTful API path naming standards
+- Input validation with Zod schemas
+- Error handling and response envelopes
+- Data Transfer Objects (DTOs)
+- Type safety patterns
+- API route checklist
+
 ### 📋 `project-standards.mdc`
 **Applies to:** All TypeScript files
 - General coding standards
 - File naming and organization
 - Component structure patterns
 - Import conventions with @/ alias
-- Performance and security guidelines
+- Performance guidelines
+- Basic security reminders (see security.mdc for comprehensive guidance)
 
 ## How It Works
 
