@@ -32,35 +32,21 @@ shadcn/ui components have **built-in accessibility** via Radix UI:
 ## Custom Component Accessibility
 
 ### Semantic HTML
-Use appropriate HTML elements for their intended purpose:
-```typescript
-// Good: Semantic elements
-<button onClick={handleClick}>Submit</button>
-<nav>Navigation content</nav>
-<header>Header content</header>
-<main>Main content</main>
-<footer>Footer content</footer>
-
-// Bad: Non-semantic divs
-<div onClick={handleClick}>Submit</div>
-<div>Navigation content</div>
-```
+Use appropriate HTML elements:
+- `<button>` for actions
+- `<nav>`, `<header>`, `<main>`, `<footer>` for structure
+- `<a>` for navigation
+- Never use `<div onClick>` when `<button>` is appropriate
 
 ### Heading Hierarchy
-Maintain proper heading structure (h1 -> h2 -> h3):
-```typescript
-// Good: Logical hierarchy
-<h1>Page Title</h1>
-  <h2>Section Title</h2>
-    <h3>Subsection Title</h3>
-
-// Bad: Skipping levels
-<h1>Page Title</h1>
-  <h3>Section Title</h3> {/* Skipped h2 */}
-```
+Maintain logical heading structure (h1 → h2 → h3):
+- Don't skip levels (h1 → h3)
+- One h1 per page
+- Headings reflect content structure, not visual style
 
 ### ARIA Labels and Descriptions
 Add ARIA attributes when semantic HTML isn't enough:
+
 ```typescript
 // Icon button without text
 <button aria-label="Close dialog" onClick={onClose}>
@@ -71,16 +57,22 @@ Add ARIA attributes when semantic HTML isn't enough:
 <img src="/decoration.png" alt="" role="presentation" />
 
 // Complex widgets
-<div
-  role="tablist"
-  aria-label="Account settings"
->
+<div role="tablist" aria-label="Account settings">
   {/* Tab content */}
 </div>
 ```
 
 ### Keyboard Navigation
 Ensure all interactive elements work with keyboard:
+
+**Key shortcuts:**
+- `Tab` / `Shift + Tab` - Navigate
+- `Enter` - Activate buttons/links
+- `Space` - Activate buttons
+- `Escape` - Close dialogs/modals
+- Arrow keys - Navigate within components (lists, tabs)
+
+**Pattern:**
 ```typescript
 // Good: Handles both click and keyboard
 <div
@@ -97,18 +89,8 @@ Ensure all interactive elements work with keyboard:
 </div>
 
 // Better: Use native button element
-<button onClick={handleAction}>
-  Native Button
-</button>
+<button onClick={handleAction}>Native Button</button>
 ```
-
-**Important keyboard shortcuts:**
-- `Tab` - Navigate forward
-- `Shift + Tab` - Navigate backward
-- `Enter` - Activate buttons/links
-- `Space` - Activate buttons
-- `Escape` - Close dialogs/modals
-- Arrow keys - Navigate within components (lists, tabs, etc.)
 
 ### Color Contrast
 Maintain WCAG AA minimum contrast ratios:
@@ -116,22 +98,12 @@ Maintain WCAG AA minimum contrast ratios:
 - Large text (18pt+ or 14pt+ bold): 3:1
 - UI components and graphics: 3:1
 
-```typescript
-// Good: Sufficient contrast
-<div className="bg-blue-600 text-white">
-  High contrast text
-</div>
-
-// Be careful with subtle colors
-<div className="bg-gray-100 text-gray-400">
-  {/* May not meet contrast requirements */}
-</div>
-```
+Test with [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 
 ### Focus Indicators
-Ensure visible focus states for keyboard navigation:
+Ensure visible focus states:
 ```typescript
-// Good: Clear focus indicator
+// Clear focus indicator
 <button className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
   Accessible Button
 </button>
@@ -144,6 +116,7 @@ Ensure visible focus states for keyboard navigation:
 
 ### Screen Reader Support
 Provide context for screen reader users:
+
 ```typescript
 // Loading state
 <button disabled aria-busy="true">
@@ -164,7 +137,7 @@ Provide context for screen reader users:
 
 ### Form Accessibility
 ```typescript
-// Good: Proper form labeling
+// Proper form labeling
 <div>
   <label htmlFor="email">Email Address</label>
   <input
@@ -185,51 +158,38 @@ Provide context for screen reader users:
 ## Accessibility Testing
 
 ### Manual Testing Checklist
-- ✅ Can be navigated with keyboard only (no mouse)
-- ✅ Has visible focus indicators on all interactive elements
-- ✅ Includes descriptive labels and aria-labels where needed
-- ✅ Maintains color contrast ratios (WCAG AA minimum)
-- ✅ Works with screen readers (test with NVDA, JAWS, VoiceOver)
-- ✅ Provides error feedback accessibly (role="alert")
-- ✅ Forms have proper labels and error states
-- ✅ Images have appropriate alt text
-- ✅ Headings follow logical hierarchy
+- [ ] Can be navigated with keyboard only (no mouse)
+- [ ] Has visible focus indicators on all interactive elements
+- [ ] Includes descriptive labels and aria-labels where needed
+- [ ] Maintains color contrast ratios (WCAG AA minimum)
+- [ ] Works with screen readers (test with NVDA, JAWS, VoiceOver)
+- [ ] Provides error feedback accessibly (role="alert")
+- [ ] Forms have proper labels and error states
+- [ ] Images have appropriate alt text
+- [ ] Headings follow logical hierarchy
 
 ### Testing Tools
 - **Browser DevTools**: Lighthouse accessibility audit
 - **axe DevTools**: Browser extension for accessibility testing
 - **WAVE**: Web accessibility evaluation tool
 - **Screen readers**: NVDA (Windows), JAWS (Windows), VoiceOver (macOS/iOS)
-- **Keyboard only**: Unplug your mouse and try navigating
+- **Keyboard only**: Unplug mouse and navigate
 
 ## WCAG 2.1 AA Compliance
 
-Key requirements for Level AA:
-1. **Perceivable**: Information must be presentable to users
-   - Provide text alternatives for images
-   - Provide captions for videos
-   - Content is distinguishable (color contrast)
+Key requirements:
+1. **Perceivable**: Text alternatives, captions, distinguishable content (color contrast)
+2. **Operable**: Keyboard accessible, enough time, no seizure-inducing content, navigable
+3. **Understandable**: Readable text, predictable behavior, input assistance
+4. **Robust**: Valid HTML, proper ARIA usage, works with assistive technologies
 
-2. **Operable**: UI components must be operable
-   - Keyboard accessible
-   - Enough time to read content
-   - No seizure-inducing content
-   - Navigable (clear focus order)
-
-3. **Understandable**: Information must be understandable
-   - Readable text
-   - Predictable behavior
-   - Input assistance (labels, errors)
-
-4. **Robust**: Content works with assistive technologies
-   - Valid HTML
-   - Proper ARIA usage
+**Reference:** [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 
 ## Common Accessibility Patterns
 
 ### Skip Links
+Allow keyboard users to skip navigation:
 ```typescript
-// Allow keyboard users to skip navigation
 <a
   href="#main-content"
   className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
@@ -243,15 +203,21 @@ Key requirements for Level AA:
 ```
 
 ### Modal Dialogs
-```typescript
-// Trap focus within modal
-// Restore focus when closed
-// Close on Escape key
-// Use shadcn Dialog component (has this built-in)
-```
+- Trap focus within modal
+- Restore focus when closed
+- Close on Escape key
+- Use shadcn Dialog component (has this built-in)
 
-## Resources
-- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+## Quick Reference
+
+**Key Principles:**
+- Use semantic HTML first
+- Add ARIA only when necessary
+- Test with keyboard and screen readers
+- Maintain sufficient color contrast
+- Preserve shadcn/ui accessibility features
+
+**Resources:**
 - [Radix UI Accessibility](https://www.radix-ui.com/primitives/docs/overview/accessibility)
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - [A11y Project Checklist](https://www.a11yproject.com/checklist/)
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
