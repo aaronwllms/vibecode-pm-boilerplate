@@ -80,7 +80,7 @@ supabase migration new add_user_preferences
 
 **Steps:**
 1. Check if local Supabase is running:
-   - Run: `pnpm supabase:status`
+   - Run: `supabase status`
    - If not running: "Local Supabase is not running. Start it with: `pnpm supabase:start`"
    - Ask: "Would you like me to start it now? (y/n)"
    
@@ -153,7 +153,7 @@ supabase migration new add_user_preferences
 
 **Steps:**
 1. Check if local Supabase is running:
-   - Run: `pnpm supabase:status`
+   - Run: `supabase status`
    - If not running: "Start local Supabase first with: `pnpm supabase:start`"
 
 2. Confirm with user:
@@ -187,10 +187,9 @@ supabase migration new add_user_preferences
 **Safety:** ✅ Safe - read-only operation
 
 **Steps:**
-1. Determine which database to use:
-   - If local Supabase running: Uses local
-   - If linked to remote: Uses remote
-   - Show which one will be used
+1. Note: This command generates types from your LOCAL Supabase instance
+   - Ensure local Supabase is running: `pnpm supabase:start`
+   - The command uses the `--local` flag automatically
 
 2. Run: `pnpm db:types`
 

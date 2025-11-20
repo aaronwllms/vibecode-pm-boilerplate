@@ -30,6 +30,13 @@ if [[ "$1" == "--confirm" ]]; then
     REQUIRE_CONFIRM=true
 fi
 
+# Verify we're in project root
+if [[ ! -f "package.json" ]] || [[ ! -d "supabase" ]]; then
+    echo -e "${RED}❌ Must be run from project root${NC}"
+    echo "   Navigate to your project directory first"
+    exit 1
+fi
+
 echo -e "${BLUE}🔍 Supabase Preflight Check${NC}"
 echo "=============================="
 echo ""
@@ -98,7 +105,7 @@ else
     echo ""
     
     # Try to get project name from local config
-    if [[ -f ".git/config.toml" ]] || [[ -f "supabase/config.toml" ]]; then
+    if [[ -f "supabase/config.toml" ]]; then
         PROJECT_NAME=$(grep -A 5 'project_id' supabase/config.toml 2>/dev/null | grep 'name' | cut -d'"' -f2 || echo "")
         if [[ -n "$PROJECT_NAME" ]]; then
             echo "   Project Name: ${YELLOW}${PROJECT_NAME}${NC}"
@@ -115,6 +122,15 @@ else
         ls -1t supabase/migrations/*.sql 2>/dev/null | head -3 | while read migration; do
             basename "$migration" | sed 's/^/     - /'
         done
+    fi
+    
+    # Check for pending migrations (migrations not yet applied to remote)
+    PENDING_CHECK=$(supabase migration list 2>&1 || true)
+    if echo "$PENDING_CHECK" | grep -q "pending"; then
+        echo ""
+        echo -e "   ${YELLOW}⚠️  Pending migrations detected${NC}"
+        echo "   Some migrations have not been pushed to remote"
+        echo "   Run 'supabase migration list' for details"
     fi
     echo ""
     

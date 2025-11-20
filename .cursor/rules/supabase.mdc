@@ -5,6 +5,8 @@ globs:
   - 'src/**/*.tsx'
   - 'src/utils/supabase.ts'
   - 'src/middleware.ts'
+  - 'supabase/migrations/**/*.sql'
+  - 'scripts/db-preflight.sh'
 ---
 
 # Supabase Integration (@supabase/ssr)
@@ -41,7 +43,7 @@ These commands ONLY affect your local Supabase instance:
 - `pnpm supabase:stop` - Stop local Supabase
 - `pnpm db:reset` - Reset LOCAL database and apply all migrations
 - `pnpm db:seed` - Seed LOCAL database with test data
-- `pnpm db:types` - Generate TypeScript types from current database
+- `pnpm db:types` - Generate TypeScript types from LOCAL database
 
 #### ⚠️ Dangerous Commands (Affects Remote)
 These commands affect the LINKED remote Supabase project:
@@ -138,7 +140,7 @@ Before any database operation, confirm:
 - [ ] I've generated TypeScript types with `db:types`
 - [ ] I understand if this command affects local or remote
 
-**💡 Tip:** Use the `@db-migration` Cursor command for guided workflows with built-in safety checks.
+**💡 Tip:** Use the db-migration Cursor command for guided workflows with built-in safety checks. (Type `@db-migration` in Cursor to invoke)
 
 ## Context-Specific Client Usage
 
