@@ -16,7 +16,7 @@ Simplified 4-directory structure prevents docs sprawl and makes archiving predic
 
 - `archive/` - All archived/completed content (flat structure with prefixes)
 - `api/` - API documentation (OpenAPI specs, context docs)
-- `guides/` - All guides, standards, troubleshooting, architecture docs
+- `features/` - Feature architecture docs with visual diagrams (Mermaid)
 - `prd/` - Product requirements documents
 - `todo/` - Active todo items (no subdirectories)
 
@@ -28,7 +28,7 @@ When archiving, prefix filename with original directory: `<original-dir>-<filena
 
 **Examples:**
 - `todo/feature-request.md` → `archive/todo-feature-request.md`
-- `guides/troubleshooting.md` → `archive/guides-troubleshooting.md`
+- `features/dual-cache.md` → `archive/features-dual-cache.md`
 
 This keeps archives flat while preserving origin context.
 
@@ -66,5 +66,5 @@ When archiving:
 
 Periodically review:
 - `todo/` for completed items to archive
-- `guides/` for outdated content
+- `features/` for outdated content
 - `archive/` consolidation opportunities
