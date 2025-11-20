@@ -94,20 +94,49 @@ describe('UserMenu', () => {
       <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
     )
 
-    const avatarButton = screen.getByRole('button')
+    const avatarButton = screen.getByRole('button', { name: /user menu/i })
     await user.click(avatarButton)
 
     await waitFor(() => {
       expect(screen.getByText('Edit Profile')).toBeInTheDocument()
     })
 
-    // Note: Current implementation has UX limitation where DropdownMenuItem closes on click
-    // This test verifies the "Edit Profile" button is clickable
     const editButton = screen.getByText('Edit Profile')
-    expect(editButton).toBeInTheDocument()
-    
     await user.click(editButton)
-    // Dropdown closes after click - this is current behavior
+
+    // Verify edit form is now visible
+    await waitFor(() => {
+      expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/bio/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /save changes/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+    })
+  })
+
+  it('should return to menu view when cancel is clicked', async () => {
+    const user = userEvent.setup()
+    render(
+      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+    )
+
+    // Open dropdown and click edit
+    const avatarButton = screen.getByRole('button', { name: /user menu/i })
+    await user.click(avatarButton)
+    await user.click(screen.getByText('Edit Profile'))
+
+    // Wait for edit form
+    await waitFor(() => {
+      expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
+    })
+
+    // Click cancel
+    await user.click(screen.getByRole('button', { name: /cancel/i }))
+
+    // Should return to menu view
+    await waitFor(() => {
+      expect(screen.getByText('Test User')).toBeInTheDocument()
+      expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument()
+    })
   })
 })
 
