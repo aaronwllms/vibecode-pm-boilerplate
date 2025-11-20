@@ -11,7 +11,6 @@ describe('NavLinks', () => {
   it('should render all navigation links', () => {
     render(<NavLinks />)
 
-    expect(screen.getByText('Home')).toBeInTheDocument()
     expect(screen.getByText('Docs')).toBeInTheDocument()
     expect(screen.getByText('Features')).toBeInTheDocument()
     expect(screen.getByText('Pricing')).toBeInTheDocument()
@@ -23,8 +22,8 @@ describe('NavLinks', () => {
 
     render(<NavLinks />)
 
-    const homeLink = screen.getByText('Home')
-    expect(homeLink).toHaveClass('text-foreground')
+    const docsLink = screen.getByText('Docs')
+    expect(docsLink).toHaveClass('text-foreground')
   })
 
   it('should call onLinkClick when link is clicked', async () => {
@@ -32,7 +31,7 @@ describe('NavLinks', () => {
     const user = userEvent.setup()
     render(<NavLinks onLinkClick={onLinkClick} />)
 
-    await user.click(screen.getByText('Home'))
+    await user.click(screen.getByText('Docs'))
 
     expect(onLinkClick).toHaveBeenCalledTimes(1)
   })

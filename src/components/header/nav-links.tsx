@@ -10,10 +10,9 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { href: '/', label: 'Home' },
-  { href: '#', label: 'Docs' },
-  { href: '#', label: 'Features' },
-  { href: '#', label: 'Pricing' },
+  { href: '/', label: 'Docs' },
+  { href: '/', label: 'Features' },
+  { href: '/', label: 'Pricing' },
 ]
 
 interface NavLinksProps {
@@ -30,7 +29,7 @@ export function NavLinks({ className, onLinkClick }: NavLinksProps) {
         const isActive = pathname === link.href
         return (
           <Link
-            key={link.href}
+            key={link.label}
             href={link.href}
             onClick={onLinkClick}
             className={cn(
