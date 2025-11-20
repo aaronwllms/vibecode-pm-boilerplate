@@ -1,8 +1,19 @@
 import Link from 'next/link'
 import { headers, cookies } from 'next/headers'
-import { redirect, isRedirectError } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
 import { logger } from '@/utils/logger'
+
+// Helper to check if error is a Next.js redirect
+function isRedirectError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'digest' in error &&
+    typeof (error as { digest?: string }).digest === 'string' &&
+    (error as { digest: string }).digest.startsWith('NEXT_REDIRECT')
+  )
+}
 
 export default function Login({
   searchParams,
