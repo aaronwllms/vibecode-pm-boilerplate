@@ -116,8 +116,8 @@ comment on column public.profiles.bio is 'User bio or description';
 -- Storage Setup for Avatars
 -- =====================================================================================
 -- Create avatars bucket for user profile pictures
-insert into storage.buckets (id, name, public)
-values ('avatars', 'avatars', true)
+insert into storage.buckets (id, name)
+values ('avatars', 'avatars')
 on conflict (id) do nothing;
 
 -- Storage Policy: Avatar images are publicly accessible

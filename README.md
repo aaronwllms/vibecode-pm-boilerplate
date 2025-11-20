@@ -142,7 +142,11 @@ After deployment:
 2. Add environment variables in Vercel project settings
 3. Redeploy
 
-> 💡 **Local Supabase Development**: Check out [the docs](https://supabase.com/docs/guides/getting-started/local-development) to run Supabase locally with Docker.
+> 💡 **Local Supabase Development**: Run Supabase locally with Docker for development! See:
+> - **[Docker Setup Guide](docs/DOCKER_SETUP.md)** - Install Docker
+> - **[Local Development Guide](docs/LOCAL_DEVELOPMENT.md)** - Complete setup walkthrough
+> 
+> Quick start: `pnpm supabase:start` (requires Docker Desktop)
 
 ## Showcase
 

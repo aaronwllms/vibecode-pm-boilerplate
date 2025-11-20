@@ -1,12 +1,18 @@
 # Documentation
 
-This directory contains all project documentation organized into 5 categories.
+This directory contains all project documentation organized into categories.
+
+## Getting Started Guides
+
+- **[Quick Reference](./QUICK_REFERENCE.md)** - One-page cheat sheet for local development ⚡
+- **[Docker Setup](./DOCKER_SETUP.md)** - Install Docker for local Supabase development
+- **[Local Development](./LOCAL_DEVELOPMENT.md)** - Complete guide to running Supabase locally
 
 ## Directory Structure
 
 - **`archive/`** - Archived/completed content with prefixed filenames
 - **`api/`** - API documentation, OpenAPI specs, and context docs
-- **`guides/`** - All guides, standards, troubleshooting, and architecture docs
+- **`features/`** - Feature architecture docs with visual diagrams (Mermaid)
 - **`prd/`** - Product requirements documents
 - **`todo/`** - Active todo items
 
