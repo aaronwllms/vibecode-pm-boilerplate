@@ -30,6 +30,9 @@
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
     "db:seed": "supabase db seed",
+    "db:status": "supabase status",
+    "db:check": "bash scripts/db-preflight.sh",
+    "db:push:safe": "bash scripts/db-preflight.sh --confirm && supabase db push",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status"

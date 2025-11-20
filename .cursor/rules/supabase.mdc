@@ -9,6 +9,137 @@ globs:
 
 # Supabase Integration (@supabase/ssr)
 
+## Migration Safety Protocol
+
+### Before ANY Database Operation
+
+**ALWAYS verify your environment to prevent accidental changes to the wrong database.**
+
+1. **Check Project Linkage:**
+   ```bash
+   pnpm db:status           # Shows current Supabase linkage
+   # OR
+   supabase status          # Direct CLI command
+   ```
+
+2. **Run Preflight Check:**
+   ```bash
+   pnpm db:check            # Info only - shows what you're linked to
+   pnpm db:push:safe        # Safe push - requires confirmation
+   ```
+
+3. **Verify Intent:**
+   - Local development: Ensure local Supabase is running (`pnpm supabase:start`)
+   - Remote push: Confirm project ref matches your target environment
+
+### Safe vs Dangerous Commands
+
+#### ✅ Safe Commands (Local Only)
+These commands ONLY affect your local Supabase instance:
+
+- `pnpm supabase:start` - Start local Supabase Docker containers
+- `pnpm supabase:stop` - Stop local Supabase
+- `pnpm db:reset` - Reset LOCAL database and apply all migrations
+- `pnpm db:seed` - Seed LOCAL database with test data
+- `pnpm db:types` - Generate TypeScript types from current database
+
+#### ⚠️ Dangerous Commands (Affects Remote)
+These commands affect the LINKED remote Supabase project:
+
+- `pnpm db:push` - Pushes migrations to remote project
+- `supabase db push` - Same as above
+- `supabase link` - Changes which project you're linked to
+- `supabase db remote commit` - Commits remote changes
+
+**ALWAYS run `pnpm db:check` before these commands!**
+
+### Migration Creation Safety
+
+#### ✅ CORRECT: Use Supabase CLI
+```bash
+# Let Supabase CLI generate the timestamp
+supabase migration new add_user_preferences
+
+# This creates: supabase/migrations/[TIMESTAMP]_add_user_preferences.sql
+```
+
+#### ❌ NEVER: Manually Create Migration Files
+```bash
+# DON'T manually create timestamped files
+touch supabase/migrations/20231120_my_migration.sql  # WRONG!
+```
+
+**Why?** Manual timestamps can cause:
+- Migration ordering issues
+- Timestamp conflicts with other developers
+- Incorrect migration sequencing across environments
+
+### Recommended Workflows
+
+#### Local Development (Safe)
+```bash
+# 1. Start local Supabase
+pnpm supabase:start
+
+# 2. Create migration
+supabase migration new my_feature
+
+# 3. Edit the SQL file
+# Edit: supabase/migrations/[timestamp]_my_feature.sql
+
+# 4. Apply locally and test
+pnpm db:reset
+
+# 5. Generate types
+pnpm db:types
+
+# 6. Test your app locally
+pnpm dev
+```
+
+#### Push to Remote (Requires Caution)
+```bash
+# 1. Verify current linkage
+pnpm db:check
+
+# 2. Link to correct project (if needed)
+supabase link --project-ref YOUR_PROJECT_REF
+
+# 3. Push with safety check
+pnpm db:push:safe
+# OR manually with confirmation
+pnpm db:check && pnpm db:push
+
+# 4. Generate types from remote
+pnpm db:types
+```
+
+### Red Flags & Anti-Patterns
+
+#### 🚨 STOP if you see these:
+- Running `db:push` without knowing which project you're linked to
+- Creating migration files with manual timestamps
+- Pushing migrations that haven't been tested locally
+- Not having a local Supabase instance for testing
+- Skipping `db:reset` after creating migrations
+
+#### ⚠️ Common Mistakes:
+- Assuming you're in local mode when you're linked to remote
+- Forgetting to `supabase:start` before local development
+- Not running `db:types` after schema changes
+- Creating migrations with DROP/DELETE statements without backups
+
+### Environment Verification Checklist
+
+Before any database operation, confirm:
+- [ ] I know which environment I'm targeting (local/staging/production)
+- [ ] I've run `pnpm db:check` to verify linkage
+- [ ] I've tested migrations locally with `db:reset`
+- [ ] I've generated TypeScript types with `db:types`
+- [ ] I understand if this command affects local or remote
+
+**💡 Tip:** Use the `@db-migration` Cursor command for guided workflows with built-in safety checks.
+
 ## Context-Specific Client Usage
 
 ### Client Components
