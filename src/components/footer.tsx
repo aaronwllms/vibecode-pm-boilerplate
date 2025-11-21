@@ -15,7 +15,7 @@ export default function Footer() {
               href="/"
               className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-lg font-bold text-transparent transition-opacity hover:opacity-80"
             >
-              SupaNext
+              NextPM
             </Link>
             <nav className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <Link
@@ -73,7 +73,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>© {currentYear} SupaNext. All rights reserved.</p>
+          <p>© {currentYear} NextPM. All rights reserved.</p>
         </div>
       </div>
     </footer>
