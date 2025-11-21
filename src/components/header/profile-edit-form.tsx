@@ -63,7 +63,7 @@ export function ProfileEditForm({
         user={user}
         profile={profile}
         getInitials={getInitials}
-        onMessage={setMessage}
+        onMessage={setSuccessMessage}
       />
 
       <form action={handleProfileUpdate} className="space-y-4">
