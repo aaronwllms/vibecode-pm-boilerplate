@@ -17,7 +17,7 @@ This document provides instructions for using NextPM as a template for your new 
 
 **Option B: Clone Directly**
 ```bash
-git clone https://github.com/your-username/supa-next-starter.git my-new-project
+git clone https://github.com/your-username/vibecode-pm-boilerplate.git my-new-project
 cd my-new-project
 rm -rf .git
 git init
@@ -77,7 +77,7 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 
 **One-Click Deploy:**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/supa-next-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/vibecode-pm-boilerplate)
 
 **Manual Deploy:**
 1. Push your code to GitHub
@@ -138,7 +138,7 @@ After setup, customize these for your project:
 ## 📁 Project Structure
 
 ```
-supa-next-starter/
+vibecode-pm-boilerplate/
 ├── .cursor/rules/          # Cursor AI rules for consistent development
 ├── src/
 │   ├── app/                # Next.js 14 App Router

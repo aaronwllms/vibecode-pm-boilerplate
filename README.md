@@ -10,7 +10,7 @@
 
 <div align="center">
 
-<img alt="GitHub License" src="https://img.shields.io/github/license/aaronwllms/supa-next-starter">
+<img alt="GitHub License" src="https://img.shields.io/github/license/aaronwllms/vibecode-pm-boilerplate">
 
 </div>
 
@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20for%20your%20project&envLink=https://app.supabase.com/project/_/settings/api&project-name=nextpm-app&repository-name=nextpm-app">
+  <a href="https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/vibecode-pm-boilerplate&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20for%20your%20project&envLink=https://app.supabase.com/project/_/settings/api&project-name=nextpm-app&repository-name=nextpm-app">
     <img src="https://vercel.com/button" alt="Deploy with Vercel"/>
   </a>
 </p>
@@ -70,7 +70,7 @@
 
 1. **Use this template** (click "Use this template" button on GitHub) or clone:
    ```bash
-   git clone https://github.com/aaronwllms/supa-next-starter.git my-project
+   git clone https://github.com/aaronwllms/vibecode-pm-boilerplate.git my-project
    cd my-project
    ```
 
@@ -102,7 +102,7 @@
 
 1. **Clone and install:**
    ```bash
-   git clone https://github.com/aaronwllms/supa-next-starter.git my-project
+   git clone https://github.com/aaronwllms/vibecode-pm-boilerplate.git my-project
    cd my-project
    pnpm install
    ```
@@ -141,7 +141,7 @@
 
 Deploy directly to Vercel with environment variable prompts:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/vibecode-pm-boilerplate&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 After deployment:
 1. Create a [Supabase project](https://app.supabase.com)
@@ -153,7 +153,7 @@ After deployment:
 
 Projects built with NextPM:
 
-- [Add yours](https://github.com/aaronwllms/supa-next-starter/edit/main/README.md)
+- [Add yours](https://github.com/aaronwllms/vibecode-pm-boilerplate/edit/main/README.md)
 
 # Documentation
 
@@ -212,7 +212,7 @@ This starter is optimized for [Vercel](https://vercel.com):
 
 1. **One-Click Deploy:**
    
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/supa-next-starter)
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/vibecode-pm-boilerplate)
 
 2. **Manual Deploy:**
    - Push your code to GitHub
@@ -297,7 +297,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Feedback and issues
 
-Please file feedback and issues [here](https://github.com/aaronwllms/supa-next-starter/issues).
+Please file feedback and issues [here](https://github.com/aaronwllms/vibecode-pm-boilerplate/issues).
 
 ## Credits
 

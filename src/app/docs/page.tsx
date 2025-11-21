@@ -19,7 +19,7 @@ const documentationSections = [
         title: 'Quick Start for PMs',
         description:
           'Complete guide for Product Managers working with AI development tools. Learn how to use Cursor effectively, validate code, and build features with confidence.',
-        href: 'https://github.com/aaronwllms/supa-next-starter/blob/main/docs/QUICK_START_FOR_PMS.md',
+        href: 'https://github.com/aaronwllms/vibecode-pm-boilerplate/blob/main/docs/QUICK_START_FOR_PMS.md',
         icon: Rocket,
         featured: true,
         external: true,
@@ -33,7 +33,7 @@ const documentationSections = [
       {
         title: 'Documentation Index',
         description: 'Browse all project documentation organized by category.',
-        href: 'https://github.com/aaronwllms/supa-next-starter/blob/main/docs/README.md',
+        href: 'https://github.com/aaronwllms/vibecode-pm-boilerplate/blob/main/docs/README.md',
         icon: BookOpen,
         external: true,
       },
@@ -41,7 +41,7 @@ const documentationSections = [
         title: 'Feature Documentation',
         description:
           'Architectural documentation for major features with visual diagrams.',
-        href: 'https://github.com/aaronwllms/supa-next-starter/tree/main/docs/features',
+        href: 'https://github.com/aaronwllms/vibecode-pm-boilerplate/tree/main/docs/features',
         icon: FileText,
         external: true,
       },
@@ -49,7 +49,7 @@ const documentationSections = [
         title: 'Project Overview',
         description:
           'Complete project documentation including setup, structure, and conventions.',
-        href: 'https://github.com/aaronwllms/supa-next-starter/blob/main/AGENTS.md',
+        href: 'https://github.com/aaronwllms/vibecode-pm-boilerplate/blob/main/AGENTS.md',
         icon: BookOpen,
         external: true,
       },
@@ -159,7 +159,7 @@ export default function DocsPage() {
                 If you can&apos;t find what you&apos;re looking for, check out
                 the{' '}
                 <Link
-                  href="https://github.com/aaronwllms/supa-next-starter"
+                  href="https://github.com/aaronwllms/vibecode-pm-boilerplate"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-primary underline underline-offset-4 hover:text-primary/80"
@@ -168,7 +168,7 @@ export default function DocsPage() {
                 </Link>{' '}
                 or review the{' '}
                 <Link
-                  href="https://github.com/aaronwllms/supa-next-starter/blob/main/AGENTS.md"
+                  href="https://github.com/aaronwllms/vibecode-pm-boilerplate/blob/main/AGENTS.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-primary underline underline-offset-4 hover:text-primary/80"

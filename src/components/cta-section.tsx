@@ -36,7 +36,7 @@ export default function CTASection() {
               className="w-full transition-transform duration-300 hover:scale-105 sm:w-auto"
             >
               <Link
-                href="https://github.com/aaronwllms/supa-next-starter"
+                href="https://github.com/aaronwllms/vibecode-pm-boilerplate"
                 target="_blank"
                 rel="noopener noreferrer"
               >
