@@ -458,7 +458,7 @@ describe('UsersPage', () => {
       expect(mockFrom).toHaveBeenCalledWith('profiles')
       expect(mockSelect).toHaveBeenCalledWith('role')
       expect(mockSelect).toHaveBeenCalledWith(
-        'id, email, full_name, created_at',
+        'id, email, full_name, role, created_at',
       )
       expect(mockOrder).toHaveBeenCalledWith('created_at', {
         ascending: false,

@@ -1,3 +1,4 @@
+import type React from 'react'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
@@ -33,6 +34,21 @@ const userColumns: ColumnDef<Profile>[] = [
         return <span className="text-muted-foreground">—</span>
       }
       return value as React.ReactNode
+    },
+  },
+  {
+    header: 'Role',
+    accessor: 'role',
+    cell: (value): React.ReactNode => {
+      const role = value as 'admin' | 'user' | null
+      if (!role) {
+        return <span className="text-muted-foreground">—</span>
+      }
+      return (
+        <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium capitalize text-primary">
+          {role}
+        </span>
+      )
     },
   },
   {
@@ -85,7 +101,7 @@ export default async function UsersPage() {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, email, full_name, created_at')
+      .select('id, email, full_name, role, created_at')
       .order('created_at', { ascending: false })
 
     if (error) {
