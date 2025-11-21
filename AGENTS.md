@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-NextPM - A production-ready Next.js 14 (App Router) + Supabase starter template with TypeScript, Tailwind CSS, shadcn/ui, testing setup, and developer tooling.
+pm-app - A production-ready Next.js 14 (App Router) + Supabase starter template with TypeScript, Tailwind CSS, shadcn/ui, testing setup, and developer tooling.
 
 ## Setup Commands
 

@@ -11,7 +11,7 @@ export default function CTASection() {
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
             Join product managers who are building faster with AI-powered
-            development. Get started today with NextPM.
+            development. Get started today with pm-app.
           </p>
           <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button

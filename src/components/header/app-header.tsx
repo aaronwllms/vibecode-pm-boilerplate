@@ -45,7 +45,7 @@ export async function AppHeader() {
             aria-label="Home"
           >
             <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-xl font-bold text-transparent">
-              NextPM
+              pm-app
             </span>
           </Link>
 

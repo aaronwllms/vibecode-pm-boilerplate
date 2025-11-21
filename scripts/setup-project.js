@@ -3,7 +3,7 @@
 /**
  * Setup Project Script
  *
- * This script helps customize the NextPM template for your new project.
+ * This script helps customize the pm-app template for your new project.
  * Run: pnpm run setup-project
  *
  * It will:
@@ -45,7 +45,7 @@ function question(prompt) {
 }
 
 async function main() {
-  print('\n🚀 NextPM - Project Setup\n', colors.bright)
+  print('\n🚀 pm-app - Project Setup\n', colors.bright)
   print('This wizard will help you customize the template for your project.\n')
 
   // 1. Get project details

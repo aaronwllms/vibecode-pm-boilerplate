@@ -1,4 +1,4 @@
-<h1 align="center">⚡ NextPM ⚡</h1>
+<h1 align="center">⚡ pm-app ⚡</h1>
 
 <p align="center">
  Build with AI, Ship with Confidence
@@ -15,7 +15,7 @@
 </div>
 
 <div align="center">
-  <sub>NextPM created by <a href="https://github.com/aaronwllms">@aaronwllms</a> · Forked from <a href="https://github.com/michaeltroya/supa-next-starter">michaeltroya/supa-next-starter</a>
+  <sub>pm-app created by <a href="https://github.com/aaronwllms">@aaronwllms</a> · Forked from <a href="https://github.com/michaeltroya/supa-next-starter">michaeltroya/supa-next-starter</a>
 </div>
 
 <br/>
@@ -151,7 +151,7 @@ After deployment:
 
 ## Showcase
 
-Projects built with NextPM:
+Projects built with pm-app:
 
 - [Add yours](https://github.com/aaronwllms/vibecode-pm-boilerplate/edit/main/README.md)
 
@@ -301,9 +301,9 @@ Please file feedback and issues [here](https://github.com/aaronwllms/vibecode-pm
 
 ## Credits
 
-**NextPM** is created by [@aaronwllms](https://github.com/aaronwllms) and is a fork of [michaeltroya/supa-next-starter](https://github.com/michaeltroya/supa-next-starter) by [Michael Troya](https://twitter.com/michaeltroya_). 
+**pm-app** is created by [@aaronwllms](https://github.com/aaronwllms) and is a fork of [michaeltroya/supa-next-starter](https://github.com/michaeltroya/supa-next-starter) by [Michael Troya](https://twitter.com/michaeltroya_). 
 
-NextPM extends the original starter with:
+pm-app extends the original starter with:
 - Focus on AI-powered development for Product Managers
 - Comprehensive Cursor rules and AI guidance
 - PM-friendly documentation and quick start guides

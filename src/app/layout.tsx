@@ -15,7 +15,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'NextPM - Build with AI, Ship with Confidence',
+  title: 'pm-app - Build with AI, Ship with Confidence',
   description:
     'A starter template designed for product managers who code with AI. Built-in guardrails, best practices, and Cursor rules.',
 }
