@@ -14,6 +14,7 @@ import { NavLinks } from './nav-links'
 import { UserMenu, LoginButton } from './user-menu'
 import ThemeToggle from '@/components/ThemeToggle'
 import type { Profile } from '@/types/profile'
+import type { NavLink } from '@/utils/navigation'
 
 interface MobileNavProps {
   user: {
@@ -21,9 +22,10 @@ interface MobileNavProps {
   } | null
   profile: Profile | null
   onSignOut: () => void
+  links: NavLink[]
 }
 
-export function MobileNav({ user, profile, onSignOut }: MobileNavProps) {
+export function MobileNav({ user, profile, onSignOut, links }: MobileNavProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -32,7 +34,7 @@ export function MobileNav({ user, profile, onSignOut }: MobileNavProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden h-10 w-10"
+          className="h-10 w-10 md:hidden"
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
@@ -42,12 +44,13 @@ export function MobileNav({ user, profile, onSignOut }: MobileNavProps) {
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
         </SheetHeader>
-        <div className="flex flex-col gap-6 mt-6">
+        <div className="mt-6 flex flex-col gap-6">
           <NavLinks
+            links={links}
             className="flex-col items-start gap-4"
             onLinkClick={() => setOpen(false)}
           />
-          <div className="border-t pt-6 space-y-4">
+          <div className="space-y-4 border-t pt-6">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Theme</span>
               <ThemeToggle />
@@ -66,4 +69,3 @@ export function MobileNav({ user, profile, onSignOut }: MobileNavProps) {
     </Sheet>
   )
 }
-

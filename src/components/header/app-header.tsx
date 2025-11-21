@@ -7,6 +7,8 @@ import { UserMenu, LoginButton } from './user-menu'
 import { MobileNav } from './mobile-nav'
 import ThemeToggle from '@/components/ThemeToggle'
 import type { Profile } from '@/types/profile'
+import { getUserRole } from '@/utils/auth-helpers'
+import { getVisibleLinks } from '@/utils/navigation'
 
 export async function AppHeader() {
   const cookieStore = cookies()
@@ -28,6 +30,10 @@ export async function AppHeader() {
     profile = data
   }
 
+  // Determine user role and filter navigation links server-side
+  const userRole = getUserRole(user, profile)
+  const visibleLinks = getVisibleLinks(userRole)
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-7xl items-center justify-between px-4">
@@ -38,13 +44,13 @@ export async function AppHeader() {
             className="flex items-center space-x-2 transition-opacity hover:opacity-80"
             aria-label="Home"
           >
-            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-xl font-bold text-transparent">
               SupaNext
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <NavLinks className="hidden md:flex" />
+          <NavLinks className="hidden md:flex" links={visibleLinks} />
         </div>
 
         {/* Right Section */}
@@ -57,7 +63,11 @@ export async function AppHeader() {
           {/* User Menu - Desktop Only */}
           <div className="hidden md:block">
             {user && profile ? (
-              <UserMenu user={user} profile={profile} onSignOut={signOutAction} />
+              <UserMenu
+                user={user}
+                profile={profile}
+                onSignOut={signOutAction}
+              />
             ) : (
               <LoginButton />
             )}
@@ -68,10 +78,10 @@ export async function AppHeader() {
             user={user}
             profile={profile}
             onSignOut={signOutAction}
+            links={visibleLinks}
           />
         </div>
       </div>
     </header>
   )
 }
-

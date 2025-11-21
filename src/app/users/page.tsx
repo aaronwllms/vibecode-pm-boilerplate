@@ -1,8 +1,10 @@
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
 import { logger } from '@/utils/logger'
 import { ErrorDisplay } from '@/components/error-display'
 import { DataTable, type ColumnDef } from '@/components/data-table'
+import { requireAuth, requireAdmin } from '@/utils/auth-helpers'
 import type { Profile } from '@/types/profile'
 
 const formatDate = (dateString: string): string => {
@@ -46,6 +48,40 @@ export default async function UsersPage() {
 
   try {
     const supabase = createServerClient(cookieStore)
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser()
+
+    if (userError || !user) {
+      logger.warn({
+        source,
+        message: 'Unauthorized access attempt to users page',
+        code: 'UNAUTHORIZED',
+      })
+      redirect('/login?redirect=/users')
+    }
+
+    requireAuth(user)
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !profile) {
+      logger.error({
+        source,
+        message: 'Failed to fetch profile for admin check',
+        code: 'PROFILE_FETCH_ERROR',
+        error: profileError,
+      })
+      redirect('/')
+    }
+
+    requireAdmin(profile as Profile)
 
     const { data, error } = await supabase
       .from('profiles')
@@ -96,6 +132,21 @@ export default async function UsersPage() {
       </div>
     )
   } catch (error) {
+    // Handle auth errors (UNAUTHORIZED, FORBIDDEN)
+    if (error instanceof Error) {
+      if (error.message === 'UNAUTHORIZED') {
+        redirect('/login?redirect=/users')
+      }
+      if (error.message === 'FORBIDDEN') {
+        logger.warn({
+          source,
+          message: 'Forbidden access attempt to users page',
+          code: 'FORBIDDEN',
+        })
+        redirect('/')
+      }
+    }
+
     logger.error({
       source,
       message: 'Unexpected error while fetching users',

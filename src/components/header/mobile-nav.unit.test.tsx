@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
 import { MobileNav } from './mobile-nav'
 import type { Profile } from '@/types/profile'
+import type { NavLink } from '@/utils/navigation'
 
 // Mock next/navigation
 jest.mock('next/navigation', () => ({
@@ -18,9 +19,25 @@ const mockProfile: Profile = {
   full_name: 'Test User',
   avatar_url: null,
   bio: null,
+  role: 'admin',
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 }
+
+const mockLinks: NavLink[] = [
+  { href: '/', label: 'Home', access: ['public', 'authenticated', 'admin'] },
+  {
+    href: '/docs',
+    label: 'Docs',
+    access: ['public', 'authenticated', 'admin'],
+  },
+  { href: '/users', label: 'Users', access: ['admin'] },
+  {
+    href: '/pricing',
+    label: 'Pricing',
+    access: ['public', 'authenticated', 'admin'],
+  },
+]
 
 const mockOnSignOut = jest.fn()
 
@@ -35,6 +52,7 @@ describe('MobileNav', () => {
         user={mockUser}
         profile={mockProfile}
         onSignOut={mockOnSignOut}
+        links={mockLinks}
       />,
     )
 
@@ -49,6 +67,7 @@ describe('MobileNav', () => {
         user={mockUser}
         profile={mockProfile}
         onSignOut={mockOnSignOut}
+        links={mockLinks}
       />,
     )
 
@@ -69,6 +88,7 @@ describe('MobileNav', () => {
         user={mockUser}
         profile={mockProfile}
         onSignOut={mockOnSignOut}
+        links={mockLinks}
       />,
     )
 
@@ -87,6 +107,7 @@ describe('MobileNav', () => {
         user={mockUser}
         profile={mockProfile}
         onSignOut={mockOnSignOut}
+        links={mockLinks}
       />,
     )
 
@@ -100,7 +121,14 @@ describe('MobileNav', () => {
 
   it('should show login button when not authenticated', async () => {
     const user = userEvent.setup()
-    render(<MobileNav user={null} profile={null} onSignOut={mockOnSignOut} />)
+    render(
+      <MobileNav
+        user={null}
+        profile={null}
+        onSignOut={mockOnSignOut}
+        links={mockLinks}
+      />,
+    )
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
     await user.click(menuButton)
@@ -117,6 +145,7 @@ describe('MobileNav', () => {
         user={mockUser}
         profile={mockProfile}
         onSignOut={mockOnSignOut}
+        links={mockLinks}
       />,
     )
 

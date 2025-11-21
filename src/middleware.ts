@@ -4,13 +4,21 @@ import { logger } from '@/utils/logger'
 
 export async function middleware(request: NextRequest) {
   try {
-    // This `try/catch` block is only here for the interactive tutorial.
-    // Feel free to remove once you have Supabase connected.
     const { supabase, response } = createMiddlewareClient(request)
 
     // Refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
-    await supabase.auth.getSession()
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    // Lightweight redirect for admin routes - full auth/role check happens at page level
+    const pathname = request.nextUrl.pathname
+    if (pathname.startsWith('/admin') && !session) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
 
     return response
   } catch (e) {

@@ -3,34 +3,24 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utils/tailwind'
-
-interface NavLink {
-  href: string
-  label: string
-}
-
-const navLinks: NavLink[] = [
-  { href: '/', label: 'Docs' },
-  { href: '/users', label: 'Users' },
-  { href: '/', label: 'Features' },
-  { href: '/', label: 'Pricing' },
-]
+import type { NavLink } from '@/utils/navigation'
 
 interface NavLinksProps {
+  links: NavLink[]
   className?: string
   onLinkClick?: () => void
 }
 
-export function NavLinks({ className, onLinkClick }: NavLinksProps) {
+export function NavLinks({ links, className, onLinkClick }: NavLinksProps) {
   const pathname = usePathname()
 
   return (
     <nav className={cn('flex items-center gap-6', className)}>
-      {navLinks.map((link) => {
+      {links.map((link) => {
         const isActive = pathname === link.href
         return (
           <Link
-            key={link.label}
+            key={link.href}
             href={link.href}
             onClick={onLinkClick}
             className={cn(

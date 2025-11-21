@@ -10,12 +10,20 @@ jest.mock('next/headers', () => ({
 // Mock Supabase client
 const mockSelect = jest.fn()
 const mockOrder = jest.fn()
+const mockEq = jest.fn()
+const mockSingle = jest.fn()
 const mockFrom = jest.fn(() => ({
   select: mockSelect,
 }))
 
+const mockGetUser = jest.fn()
+const mockAuth = {
+  getUser: mockGetUser,
+}
+
 const mockSupabase = {
   from: mockFrom,
+  auth: mockAuth,
 }
 
 jest.mock('@/utils/supabase', () => ({
@@ -35,9 +43,35 @@ jest.mock('@/utils/logger', () => ({
 describe('UsersPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+
+    // Mock auth.getUser() to return authenticated admin user
+    mockGetUser.mockResolvedValue({
+      data: {
+        user: {
+          id: 'admin-user-id',
+          email: 'admin@example.com',
+        },
+      },
+      error: null,
+    })
+
+    // Mock profile query for admin check
     mockSelect.mockReturnValue({
+      eq: mockEq,
       order: mockOrder,
     })
+    mockEq.mockReturnValue({
+      single: mockSingle,
+    })
+    mockSingle.mockResolvedValue({
+      data: {
+        id: 'admin-user-id',
+        role: 'admin',
+      },
+      error: null,
+    })
+
+    // Mock users query
     mockOrder.mockResolvedValue({
       data: null,
       error: null,
@@ -53,6 +87,7 @@ describe('UsersPage', () => {
           full_name: 'User One',
           avatar_url: null,
           bio: null,
+          role: 'user',
           created_at: '2024-01-01T00:00:00Z',
           updated_at: '2024-01-01T00:00:00Z',
         },
@@ -62,6 +97,7 @@ describe('UsersPage', () => {
           full_name: 'User Two',
           avatar_url: null,
           bio: null,
+          role: 'user',
           created_at: '2024-01-02T00:00:00Z',
           updated_at: '2024-01-02T00:00:00Z',
         },
@@ -84,6 +120,26 @@ describe('UsersPage', () => {
     })
 
     it('should render empty state when no users', async () => {
+      // Mock users query
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users list query
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: [],
         error: null,
@@ -104,11 +160,32 @@ describe('UsersPage', () => {
           full_name: null,
           avatar_url: null,
           bio: null,
+          role: 'user',
           created_at: '2024-01-01T00:00:00Z',
           updated_at: '2024-01-01T00:00:00Z',
         },
       ]
 
+      // Mock users query
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users list query
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: mockUsers,
         error: null,
@@ -126,6 +203,26 @@ describe('UsersPage', () => {
 
   describe('Invalid Input / Error Handling', () => {
     it('should handle database error', async () => {
+      // Mock admin check
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users query error
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: null,
         error: {
@@ -142,6 +239,26 @@ describe('UsersPage', () => {
     })
 
     it('should handle RLS error', async () => {
+      // Mock admin check
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users query error
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: null,
         error: {
@@ -160,6 +277,26 @@ describe('UsersPage', () => {
     })
 
     it('should handle generic database error', async () => {
+      // Mock admin check
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users query error
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: null,
         error: {
@@ -176,6 +313,26 @@ describe('UsersPage', () => {
     })
 
     it('should handle unexpected errors', async () => {
+      // Mock admin check
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users query to throw error
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockRejectedValue(new Error('Unexpected error'))
 
       const page = await UsersPage()
@@ -188,6 +345,26 @@ describe('UsersPage', () => {
 
   describe('Boundary Cases', () => {
     it('should handle null data response', async () => {
+      // Mock admin check
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users query
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: null,
         error: null,
@@ -208,11 +385,32 @@ describe('UsersPage', () => {
           full_name: 'User One',
           avatar_url: null,
           bio: null,
+          role: 'user',
           created_at: '2024-01-15T10:30:00Z',
           updated_at: '2024-01-15T10:30:00Z',
         },
       ]
 
+      // Mock admin check
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users list query
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: mockUsers,
         error: null,
@@ -230,6 +428,26 @@ describe('UsersPage', () => {
 
   describe('Data Fetching', () => {
     it('should call Supabase with correct query', async () => {
+      // Mock users query
+      mockSelect.mockReturnValueOnce({
+        eq: mockEq,
+        order: mockOrder,
+      })
+      mockEq.mockReturnValueOnce({
+        single: mockSingle,
+      })
+      mockSingle.mockResolvedValueOnce({
+        data: {
+          id: 'admin-user-id',
+          role: 'admin',
+        },
+        error: null,
+      })
+
+      // Mock users list query
+      mockSelect.mockReturnValueOnce({
+        order: mockOrder,
+      })
       mockOrder.mockResolvedValue({
         data: [],
         error: null,
@@ -238,6 +456,7 @@ describe('UsersPage', () => {
       await UsersPage()
 
       expect(mockFrom).toHaveBeenCalledWith('profiles')
+      expect(mockSelect).toHaveBeenCalledWith('role')
       expect(mockSelect).toHaveBeenCalledWith(
         'id, email, full_name, created_at',
       )

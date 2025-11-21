@@ -24,7 +24,7 @@ export type AuthActionState = {
 
 export async function signInAction(
   _prevState: AuthActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AuthActionState> {
   const source = 'app/login/actions.ts:signInAction'
   const email = formData.get('email') as string
@@ -61,8 +61,32 @@ export async function signInAction(
       }
     }
 
-    // Check if profile exists
-    const { data: profile, error: profileError } = await supabase
+    // Create a new client instance to ensure session is properly set
+    // This ensures the session cookies are properly established
+    const supabaseWithSession = createServerClient(cookieStore)
+
+    // Verify session is established
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabaseWithSession.auth.getSession()
+
+    if (sessionError || !session) {
+      logger.error({
+        source,
+        message: 'Session not established after sign in',
+        code: 'SESSION_ERROR',
+        error: sessionError,
+      })
+
+      return {
+        error: 'Failed to establish session. Please try again.',
+        errorCode: 'SESSION_ERROR',
+      }
+    }
+
+    // Check if profile exists - now with proper session
+    const { data: profile, error: profileError } = await supabaseWithSession
       .from('profiles')
       .select('*')
       .eq('id', authData.user.id)
@@ -77,11 +101,13 @@ export async function signInAction(
           userId: authData.user.id,
           email: authData.user.email,
           error: profileError?.message,
+          errorCode: profileError?.code,
+          errorDetails: profileError?.details,
         },
       })
 
       // Sign out the user since their account is in an invalid state
-      await supabase.auth.signOut()
+      await supabaseWithSession.auth.signOut()
 
       return {
         error: 'Account setup incomplete. Please contact support.',
@@ -122,7 +148,7 @@ export async function signInAction(
 
 export async function signUpAction(
   _prevState: AuthActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<AuthActionState> {
   const source = 'app/login/actions.ts:signUpAction'
   const origin = headers().get('origin')
@@ -187,4 +213,3 @@ export async function signUpAction(
     }
   }
 }
-
