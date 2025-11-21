@@ -12,6 +12,7 @@ describe('NavLinks', () => {
     render(<NavLinks />)
 
     expect(screen.getByText('Docs')).toBeInTheDocument()
+    expect(screen.getByText('Users')).toBeInTheDocument()
     expect(screen.getByText('Features')).toBeInTheDocument()
     expect(screen.getByText('Pricing')).toBeInTheDocument()
   })
@@ -42,5 +43,11 @@ describe('NavLinks', () => {
     const nav = container.querySelector('nav')
     expect(nav).toHaveClass('custom-class')
   })
-})
 
+  it('should have correct href for Users link', () => {
+    render(<NavLinks />)
+
+    const usersLink = screen.getByText('Users').closest('a')
+    expect(usersLink).toHaveAttribute('href', '/users')
+  })
+})

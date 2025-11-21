@@ -11,6 +11,7 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { href: '/', label: 'Docs' },
+  { href: '/users', label: 'Users' },
   { href: '/', label: 'Features' },
   { href: '/', label: 'Pricing' },
 ]
@@ -33,12 +34,10 @@ export function NavLinks({ className, onLinkClick }: NavLinksProps) {
             href={link.href}
             onClick={onLinkClick}
             className={cn(
-              'text-sm font-medium transition-all duration-200 hover:text-foreground relative',
+              'relative text-sm font-medium transition-all duration-200 hover:text-foreground',
               'after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-foreground',
               'after:transition-all after:duration-200 hover:after:w-full',
-              isActive
-                ? 'text-foreground after:w-full'
-                : 'text-foreground/60'
+              isActive ? 'text-foreground after:w-full' : 'text-foreground/60',
             )}
           >
             {link.label}
@@ -48,4 +47,3 @@ export function NavLinks({ className, onLinkClick }: NavLinksProps) {
     </nav>
   )
 }
-

@@ -31,7 +31,11 @@ describe('MobileNav', () => {
 
   it('should render mobile menu button', () => {
     render(
-      <MobileNav user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <MobileNav
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
@@ -41,7 +45,11 @@ describe('MobileNav', () => {
   it('should open sheet when menu button is clicked', async () => {
     const user = userEvent.setup()
     render(
-      <MobileNav user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <MobileNav
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
@@ -49,15 +57,19 @@ describe('MobileNav', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Menu')).toBeInTheDocument()
-      expect(screen.getByText('Home')).toBeInTheDocument()
       expect(screen.getByText('Docs')).toBeInTheDocument()
+      expect(screen.getByText('Users')).toBeInTheDocument()
     })
   })
 
   it('should show theme toggle in mobile menu', async () => {
     const user = userEvent.setup()
     render(
-      <MobileNav user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <MobileNav
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
@@ -71,7 +83,11 @@ describe('MobileNav', () => {
   it('should show user menu when authenticated', async () => {
     const user = userEvent.setup()
     render(
-      <MobileNav user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <MobileNav
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
@@ -84,9 +100,7 @@ describe('MobileNav', () => {
 
   it('should show login button when not authenticated', async () => {
     const user = userEvent.setup()
-    render(
-      <MobileNav user={null} profile={null} onSignOut={mockOnSignOut} />
-    )
+    render(<MobileNav user={null} profile={null} onSignOut={mockOnSignOut} />)
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
     await user.click(menuButton)
@@ -99,17 +113,21 @@ describe('MobileNav', () => {
   it('should close sheet when nav link is clicked', async () => {
     const user = userEvent.setup()
     render(
-      <MobileNav user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <MobileNav
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const menuButton = screen.getByRole('button', { name: /open menu/i })
     await user.click(menuButton)
 
     await waitFor(() => {
-      expect(screen.getByText('Home')).toBeInTheDocument()
+      expect(screen.getByText('Users')).toBeInTheDocument()
     })
 
-    await user.click(screen.getByText('Home'))
+    await user.click(screen.getByText('Users'))
 
     // Sheet should close - menu content should not be visible
     await waitFor(() => {
@@ -117,4 +135,3 @@ describe('MobileNav', () => {
     })
   })
 })
-
