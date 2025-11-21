@@ -34,9 +34,8 @@ This project uses **Supabase Cloud** for backend services.
 ## Project Structure
 
 - `/src/app/` - Next.js 14 App Router pages and API routes
-  - `/api/` - API routes including auth callbacks and message endpoints
+  - `/api/` - API routes including auth callbacks
   - `/login/` - Authentication page
-  - `/test-examples/` - Example test files and components
 - `/src/components/` - React components including auth, UI components, and examples
   - `/ui/` - shadcn/ui components (Button, DropdownMenu, etc.)
 - `/src/hooks/` - Custom React hooks
@@ -72,8 +71,7 @@ This project uses **Supabase Cloud** for backend services.
   - Watch mode (unit): `pnpm test:unit:watch`
   - Watch mode (integration): `pnpm test:integration:watch`
 - **Example Tests**: 
-  - Unit: `/src/utils/logger.unit.test.ts`, `/src/app/test-examples/counter.unit.test.tsx`
-  - Integration: `/src/components/ReactQueryExample.integration.test.tsx`
+  - Unit: `/src/utils/logger.unit.test.ts`
 
 ## Quality Checks
 

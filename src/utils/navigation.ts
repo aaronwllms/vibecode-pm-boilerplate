@@ -19,11 +19,6 @@ export const navigationConfig: NavLink[] = [
     label: 'Docs',
     access: ['public', 'authenticated', 'admin'],
   },
-  {
-    href: '/pricing',
-    label: 'Pricing',
-    access: ['public', 'authenticated', 'admin'],
-  },
 
   // Authenticated user links
   {

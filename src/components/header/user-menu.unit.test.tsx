@@ -13,6 +13,7 @@ const mockProfile: Profile = {
   full_name: 'Test User',
   avatar_url: null,
   bio: 'Test bio',
+  role: 'user',
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 }
@@ -27,7 +28,11 @@ describe('UserMenu', () => {
   it('should display user avatar and name', async () => {
     const user = userEvent.setup()
     render(
-      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <UserMenu
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     // Click to open dropdown
@@ -43,7 +48,11 @@ describe('UserMenu', () => {
   it('should display initials when no avatar', async () => {
     const user = userEvent.setup()
     render(
-      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <UserMenu
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const avatarButton = screen.getByRole('button')
@@ -59,7 +68,11 @@ describe('UserMenu', () => {
   it('should show edit profile option', async () => {
     const user = userEvent.setup()
     render(
-      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <UserMenu
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const avatarButton = screen.getByRole('button')
@@ -73,7 +86,11 @@ describe('UserMenu', () => {
   it('should call onSignOut when sign out is clicked', async () => {
     const user = userEvent.setup()
     render(
-      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <UserMenu
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const avatarButton = screen.getByRole('button')
@@ -91,7 +108,11 @@ describe('UserMenu', () => {
   it('should show edit form when edit profile is clicked', async () => {
     const user = userEvent.setup()
     render(
-      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <UserMenu
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     const avatarButton = screen.getByRole('button', { name: /user menu/i })
@@ -108,15 +129,23 @@ describe('UserMenu', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/bio/i)).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /save changes/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /save changes/i }),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /cancel/i }),
+      ).toBeInTheDocument()
     })
   })
 
   it('should return to menu view when cancel is clicked', async () => {
     const user = userEvent.setup()
     render(
-      <UserMenu user={mockUser} profile={mockProfile} onSignOut={mockOnSignOut} />
+      <UserMenu
+        user={mockUser}
+        profile={mockProfile}
+        onSignOut={mockOnSignOut}
+      />,
     )
 
     // Open dropdown and click edit
@@ -149,4 +178,3 @@ describe('LoginButton', () => {
     expect(loginButton).toHaveAttribute('href', '/login')
   })
 })
-
