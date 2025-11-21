@@ -1,26 +1,35 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { signInAction, signUpAction, type AuthActionState } from './actions'
 import { CriticalErrorBanner } from '@/components/critical-error-banner'
 
 export function LoginForm() {
   const [state, setState] = useState<AuthActionState>({})
-  const [isPending, startTransition] = useTransition()
+  const [isPending, setIsPending] = useState(false)
+  const [isSignUpPending, setIsSignUpPending] = useState(false)
 
   const handleSignIn = async (formData: FormData) => {
-    startTransition(async () => {
+    setIsPending(true)
+    setState({}) // Clear previous errors
+    try {
       const result = await signInAction({}, formData)
       setState(result)
-    })
+    } finally {
+      setIsPending(false)
+    }
   }
 
   const handleSignUp = async (formData: FormData) => {
-    startTransition(async () => {
+    setIsSignUpPending(true)
+    setState({}) // Clear previous errors
+    try {
       const result = await signUpAction({}, formData)
       setState(result)
-    })
+    } finally {
+      setIsSignUpPending(false)
+    }
   }
 
   return (
@@ -47,7 +56,7 @@ export function LoginForm() {
       </Link>
 
       {/* Critical Error Banner */}
-      {state.isCritical && state.error && (
+      {state?.isCritical && state?.error && (
         <CriticalErrorBanner
           message={state.error}
           errorCode={state.errorCode}
@@ -70,7 +79,7 @@ export function LoginForm() {
           name="email"
           placeholder="you@example.com"
           required
-          disabled={isPending}
+          disabled={isPending || isSignUpPending}
         />
         <label className="text-md" htmlFor="password">
           Password
@@ -81,18 +90,18 @@ export function LoginForm() {
           name="password"
           placeholder="••••••••"
           required
-          disabled={isPending}
+          disabled={isPending || isSignUpPending}
         />
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isSignUpPending}
           className="mb-2 rounded-md bg-green-700 px-4 py-2 text-foreground disabled:opacity-50"
         >
           {isPending ? 'Loading...' : 'Sign In'}
         </button>
         <button
           type="button"
-          disabled={isPending}
+          disabled={isPending || isSignUpPending}
           onClick={(e) => {
             const form = e.currentTarget.form
             if (form) {
@@ -102,11 +111,11 @@ export function LoginForm() {
           }}
           className="mb-2 rounded-md border border-foreground/20 px-4 py-2 text-foreground disabled:opacity-50"
         >
-          {isPending ? 'Loading...' : 'Sign Up'}
+          {isSignUpPending ? 'Loading...' : 'Sign Up'}
         </button>
 
         {/* Regular error message */}
-        {!state.isCritical && state.error && (
+        {!state?.isCritical && state?.error && (
           <p className="mt-4 bg-foreground/10 p-4 text-center text-foreground">
             {state.error}
           </p>
@@ -115,4 +124,3 @@ export function LoginForm() {
     </div>
   )
 }
-
