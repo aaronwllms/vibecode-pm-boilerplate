@@ -58,7 +58,7 @@ export function ProfileEditForm({
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-4 p-4">
       <AvatarUploadSection
         user={user}
         profile={profile}

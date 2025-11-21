@@ -8,7 +8,7 @@ interface ValidationResult {
 export function validateAvatarFile(
   file: File | null,
   userId: string,
-  source: string
+  source: string,
 ): ValidationResult {
   if (!file || file.size === 0) {
     return {
@@ -49,4 +49,3 @@ export function validateAvatarFile(
 
   return { valid: true }
 }
-

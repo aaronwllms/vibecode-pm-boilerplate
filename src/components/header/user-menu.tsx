@@ -65,7 +65,9 @@ export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
     } catch (error) {
       // If the server action returns an error instead of redirecting
       if (error && typeof error === 'object' && 'error' in error) {
-        const actionResult = error as { error: { message: string; code: string } }
+        const actionResult = error as {
+          error: { message: string; code: string }
+        }
         setError(actionResult.error)
       } else {
         setError({
@@ -96,10 +98,7 @@ export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className={isEditing ? 'w-80' : 'w-56'}
-        align="end"
-      >
+      <DropdownMenuContent className={isEditing ? 'w-80' : 'w-56'} align="end">
         {!isEditing ? (
           <>
             <DropdownMenuLabel className="font-normal">

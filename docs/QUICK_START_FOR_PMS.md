@@ -103,6 +103,7 @@ Cursor is the AI-powered code editor we use for this project. It's built on VS C
 **Download:** [https://cursor.com/download](https://cursor.com/download)
 
 Available for:
+
 - **macOS** (ARM64, x64, Universal)
 - **Windows** (x64, ARM64 - System or User install)
 - **Linux** (.deb, RPM, AppImage)
@@ -156,16 +157,16 @@ Cursor rules are instructions stored in `.cursor/rules/*.mdc` files that guide A
 
 ### Key Rule Files in This Project
 
-| Rule File | What It Covers | When It Applies |
-|-----------|---------------|-----------------|
-| `pm-collaboration.mdc` | How AI should communicate with you | Always |
-| `typescript.mdc` | TypeScript patterns and conventions | All `.ts`/`.tsx` files |
-| `nextjs.mdc` | Next.js App Router patterns | App Router files |
-| `supabase.mdc` | Supabase integration patterns | All source files |
-| `security.mdc` | Security best practices | API routes, auth flows |
-| `testing.mdc` | Testing patterns and conventions | Test files |
-| `ui-shadcn.mdc` | UI component patterns | Component files |
-| `error-handling.mdc` | Error handling standards | All source files |
+| Rule File              | What It Covers                      | When It Applies        |
+| ---------------------- | ----------------------------------- | ---------------------- |
+| `pm-collaboration.mdc` | How AI should communicate with you  | Always                 |
+| `typescript.mdc`       | TypeScript patterns and conventions | All `.ts`/`.tsx` files |
+| `nextjs.mdc`           | Next.js App Router patterns         | App Router files       |
+| `supabase.mdc`         | Supabase integration patterns       | All source files       |
+| `security.mdc`         | Security best practices             | API routes, auth flows |
+| `testing.mdc`          | Testing patterns and conventions    | Test files             |
+| `ui-shadcn.mdc`        | UI component patterns               | Component files        |
+| `error-handling.mdc`   | Error handling standards            | All source files       |
 
 **Why this matters:** These rules ensure AI generates code that follows your project's standards automatically. You don't need to remember or explain these patterns—the rules handle it.
 
@@ -201,14 +202,17 @@ pnpm db:types     # Generate TypeScript types
 ## Summary
 
 **The Problems:**
+
 - PMs need to build features without deep coding knowledge
 - AI can generate inconsistent or unsafe code without guardrails
 
 **The Solution:**
+
 - TypeScript, ESLint, Prettier, Cursor rules, Vercel, and Supabase work together as guardrails
 - These tools catch issues automatically, so you can focus on product requirements
 
 **What You Need to Know:**
+
 1. **Download Cursor** and open this project
 2. **Trust the guardrails:** The tools are set up to ensure quality automatically
 3. **Focus on product:** Describe what you want built, not how to build it
@@ -218,4 +222,4 @@ pnpm db:types     # Generate TypeScript types
 
 ---
 
-*Last updated: 2025-01-27*
+_Last updated: 2025-01-27_

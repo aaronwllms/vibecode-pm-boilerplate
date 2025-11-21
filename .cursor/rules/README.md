@@ -3,7 +3,9 @@
 This directory contains modular Cursor AI rules using the new `.mdc` format, consolidated from battle-tested patterns on [cursorrules.org](https://cursorrules.org) and optimized for this specific codebase.
 
 ## Sources
+
 These rules are derived from:
+
 - [TypeScript (Next.js, Supabase)](https://cursorrules.org/article/typescript-nextjs-supabase-cursorrules-prompt-file)
 - [Next.js, Supabase, Shadcn PWA](https://cursorrules.org/article/nextjs-supabase-shadcn-pwa-cursorrules-prompt-file) (PWA parts excluded)
 - [Next.js (React, Tailwind)](https://cursorrules.org/article/nextjs-react-tailwind-cursorrules-prompt-file)
@@ -12,7 +14,9 @@ These rules are derived from:
 - Project-specific patterns from this codebase
 
 ## What We Adopted
+
 ✅ **From Community Rules:**
+
 - DRY and SOLID principles
 - 150-line file size limit
 - RORO pattern (Receive Object, Return Object)
@@ -24,6 +28,7 @@ These rules are derived from:
 - Minimize 'use client' usage patterns
 
 ✅ **Project-Specific Additions:**
+
 - Supabase @supabase/ssr integration patterns
 - TanStack Query v5 specific guidance
 - Jest + React Testing Library + MSW v2 patterns
@@ -31,7 +36,9 @@ These rules are derived from:
 - pnpm package manager usage
 
 ## What We Excluded
+
 ❌ **Not Relevant to This Project:**
+
 - PWA functionality (Progressive Web App features)
 - Vercel AI SDK integration
 - Build Notes system (project management approach)
@@ -47,14 +54,18 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 **Note:** As of the latest optimization, UI rules have been split into three focused files for better maintainability and clearer separation of concerns.
 
 ### 📘 `typescript.mdc`
+
 **Applies to:** All TypeScript files (`**/*.ts`, `**/*.tsx`)
+
 - TypeScript strict mode conventions
 - Interface vs type preferences
 - Type safety best practices
 - Component prop typing patterns
 
 ### ⚡ `nextjs.mdc`
+
 **Applies to:** Next.js App Router files (`src/app/**/*`, `src/components/**/*`)
+
 - Server vs Client Component patterns
 - Next.js 14 conventions (error.tsx, loading.tsx, route.ts)
 - Data fetching strategies
@@ -62,14 +73,18 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - API route patterns
 
 ### 🔐 `supabase.mdc`
+
 **Applies to:** All source files, utils, middleware
+
 - Context-specific Supabase client usage
 - Migration safety protocols and database operations
 - Client creation patterns for different Next.js contexts
 - Integration with @supabase/ssr
 
 ### 🔒 `security.mdc`
+
 **Applies to:** All source files, API routes, middleware, migrations
+
 - Authentication and authorization patterns
 - Input validation with Zod (required for all API inputs)
 - Supabase Row Level Security (RLS) policies and testing
@@ -79,14 +94,18 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - Security testing patterns and checklists
 
 ### 🔄 `react-tanstack-query.mdc`
+
 **Applies to:** Hooks and components (`src/hooks/**/*`, `src/components/**/*`)
+
 - TanStack Query v5 patterns
 - Custom hook creation
 - Query key conventions
 - Mutation patterns with optimistic updates
 
 ### 🎨 `ui-shadcn.mdc`
+
 **Applies to:** Component files, especially `src/components/ui/`
+
 - **Comprehensive shadcn/ui guidance**: CLI usage, adding components
 - shadcn/ui philosophy and Radix UI relationship
 - Customization patterns and variant management with cva
@@ -96,7 +115,9 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - Best practices for shadcn/ui development
 
 ### 🎨 `ui-styling.mdc`
+
 **Applies to:** All component files
+
 - Tailwind CSS utility-first styling
 - cn() utility for conditional classes
 - Dark mode with next-themes and CSS variables
@@ -106,7 +127,9 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - Component organization standards
 
 ### ♿ `ui-accessibility.mdc`
+
 **Applies to:** All component files
+
 - Accessibility best practices (WCAG 2.1 AA compliance)
 - Semantic HTML and heading hierarchy
 - ARIA labels and descriptions
@@ -117,21 +140,27 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - Testing tools and manual testing checklist
 
 ### 🧪 `testing.mdc`
+
 **Applies to:** Test files (`**/*.test.ts`, `**/*.test.tsx`, `src/mocks/**/*`)
+
 - Jest + React Testing Library patterns
 - MSW v2 API mocking
 - Arrange-Act-Assert pattern
 - User behavior testing focus
 
 ### 🔀 `git-workflow.mdc`
+
 **Applies to:** All files
+
 - Conventional commit message format
 - Commit types (feat, fix, test, docs, etc.)
 - Pre-commit hooks and quality checks
 - Branch naming conventions
 
 ### 📝 `pm-collaboration.mdc`
+
 **Applies to:** Always active
+
 - PM + AI Developer partnership mode
 - Communication style preferences
 - Technical decision-making process
@@ -139,14 +168,18 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - Collaboration principles
 
 ### 📐 `general-conventions.mdc`
+
 **Applies to:** Always active
+
 - Date & time handling conventions
 - ISO 8601 format standards
 - Environment awareness
 - Migration file timestamp formats
 
 ### 🌐 `api-development.mdc`
+
 **Applies to:** API routes and contracts (`src/app/api/**/*`, `src/lib/api-contracts/**/*`)
+
 - RESTful API path naming standards
 - Input validation with Zod schemas
 - Error handling and response envelopes
@@ -155,7 +188,9 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 - API route checklist
 
 ### 📋 `project-standards.mdc`
+
 **Applies to:** All TypeScript files
+
 - General coding standards
 - File naming and organization
 - Component structure patterns
@@ -166,6 +201,7 @@ This directory contains modular Cursor AI rules using the new `.mdc` format. Eac
 ## How It Works
 
 Cursor AI automatically reads these rules and applies them based on:
+
 1. **File patterns** defined in the `globs` frontmatter
 2. **Context** of what you're working on
 3. **Consolidation** from multiple matching rules
@@ -173,6 +209,7 @@ Cursor AI automatically reads these rules and applies them based on:
 ## Updating Rules
 
 To modify a rule:
+
 1. Edit the relevant `.mdc` file
 2. Changes take effect immediately in Cursor
 3. Commit changes so your team stays in sync
@@ -188,6 +225,7 @@ To modify a rule:
 ✅ **Maintainable** - Clear separation of concerns
 
 ## File Size Optimization
+
 - **Previous**: 1 large ui-styling.mdc file (344 lines)
 - **Now**: 3 focused files (~150, ~150, ~200 lines respectively)
 - **Benefit**: Easier to scan, update, and maintain specific concerns
@@ -195,6 +233,6 @@ To modify a rule:
 ## Reference
 
 For more information, see:
+
 - [Cursor Rules Documentation](https://docs.cursor.com/context/rules)
 - [Project AGENTS.md](../../AGENTS.md) for complete project documentation
-

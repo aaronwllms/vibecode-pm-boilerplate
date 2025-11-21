@@ -11,7 +11,7 @@ const SOURCE = 'app/actions/avatar-upload.ts'
 
 async function deleteOldAvatar(
   supabase: ReturnType<typeof createServerClient>,
-  userId: string
+  userId: string,
 ) {
   const { data: profile } = await supabase
     .from('profiles')
@@ -26,7 +26,7 @@ async function deleteOldAvatar(
 }
 
 export async function uploadAvatar(
-  formData: FormData
+  formData: FormData,
 ): Promise<AvatarUploadResponse> {
   try {
     const cookieStore = cookies()

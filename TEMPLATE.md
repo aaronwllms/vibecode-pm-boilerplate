@@ -7,6 +7,7 @@ This document provides instructions for using pm-app as a template for your new 
 ### 1. Create Your Project
 
 **Option A: Use GitHub Template**
+
 1. Click "Use this template" button on GitHub
 2. Name your new repository
 3. Clone your new repo:
@@ -16,6 +17,7 @@ This document provides instructions for using pm-app as a template for your new 
    ```
 
 **Option B: Clone Directly**
+
 ```bash
 git clone https://github.com/your-username/vibecode-pm-boilerplate.git my-new-project
 cd my-new-project
@@ -26,11 +28,13 @@ git commit -m "chore: initialize project from template"
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 3. Set Up Environment Variables
+
 ```bash
 cp .env.example .env.local
 ```
@@ -40,6 +44,7 @@ Edit `.env.local` and add your Supabase credentials (see next step).
 ### 4. Set Up Supabase
 
 #### Create Supabase Project
+
 1. Go to [https://app.supabase.com](https://app.supabase.com)
 2. Click "New Project"
 3. Fill in project details:
@@ -49,12 +54,14 @@ Edit `.env.local` and add your Supabase credentials (see next step).
 4. Wait for project to initialize (~2 minutes)
 
 #### Get API Credentials
+
 1. Go to **Project Settings > API**
 2. Copy these values to your `.env.local`:
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
    - **anon/public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 #### Apply Database Schema
+
 ```bash
 # Install Supabase CLI (if not installed)
 npm install -g supabase
@@ -67,6 +74,7 @@ pnpm db:push
 ```
 
 ### 5. Run Development Server
+
 ```bash
 pnpm dev
 ```
@@ -80,6 +88,7 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/vibecode-pm-boilerplate)
 
 **Manual Deploy:**
+
 1. Push your code to GitHub
 2. Go to [vercel.com](https://vercel.com)
 3. Click "Import Project"
@@ -90,6 +99,7 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 6. Click "Deploy"
 
 Vercel will automatically:
+
 - Build your project
 - Deploy to production
 - Set up preview deployments for PRs
@@ -102,6 +112,7 @@ Vercel will automatically:
 After setup, customize these for your project:
 
 ### Package Information
+
 - [ ] Update `package.json`:
   - `name`
   - `description`
@@ -111,6 +122,7 @@ After setup, customize these for your project:
   - `repository`
 
 ### Branding
+
 - [ ] Replace `public/favicon.ico`
 - [ ] Replace `src/app/opengraph-image.png` (1200x630px)
 - [ ] Replace `src/app/twitter-image.png` (1200x630px)
@@ -118,16 +130,19 @@ After setup, customize these for your project:
 - [ ] Update app description in `src/app/layout.tsx`
 
 ### Documentation
+
 - [ ] Update `README.md` with your project details
 - [ ] Update `AGENTS.md` with project-specific context
 - [ ] Remove or update `TEMPLATE.md` (this file)
 
 ### Styling
+
 - [ ] Customize Tailwind theme in `tailwind.config.js`
 - [ ] Update color scheme in `src/app/globals.css`
 - [ ] Modify shadcn/ui components in `src/components/ui/` if needed
 
 ### Code
+
 - [ ] Remove example components from `src/app/test-examples/`
 - [ ] Remove example API route `src/app/api/message/route.ts`
 - [ ] Remove example hook `src/hooks/useGetMessage.ts`
@@ -166,6 +181,7 @@ vibecode-pm-boilerplate/
 ### Understanding the Example Schema
 
 The template includes an example `profiles` table showing best practices:
+
 - **Row Level Security (RLS)** enabled
 - **Foreign key** to `auth.users`
 - **Policies** for secure data access
@@ -174,19 +190,22 @@ The template includes an example `profiles` table showing best practices:
 ### Customizing the Schema
 
 1. **Edit migrations:**
+
    ```bash
    # Create new migration
    supabase migration new your_migration_name
-   
+
    # Edit: supabase/migrations/[timestamp]_your_migration_name.sql
    ```
 
 2. **Apply locally:**
+
    ```bash
    pnpm db:reset  # Reset and apply all migrations
    ```
 
 3. **Generate TypeScript types:**
+
    ```bash
    pnpm db:types
    ```
@@ -241,6 +260,7 @@ pnpm test -- --coverage
 ```
 
 ### Writing Tests
+
 - Co-locate tests with components: `component.test.tsx`
 - Use custom test utilities from `@/test/test-utils`
 - Mock API calls with MSW handlers in `src/mocks/`
@@ -251,6 +271,7 @@ pnpm test -- --coverage
 ## 🎯 Development Workflow
 
 ### Daily Development
+
 ```bash
 pnpm dev          # Start dev server
 pnpm lint         # Check for linting issues
@@ -259,12 +280,15 @@ pnpm test         # Run tests
 ```
 
 ### Pre-Commit (Automatic)
+
 The template uses Husky + lint-staged to automatically:
+
 - Format code with Prettier
 - Fix ESLint issues
 - Run type checking
 
 ### Database Changes
+
 ```bash
 pnpm db:types     # Generate TypeScript types
 pnpm db:push      # Push migrations to linked project
@@ -278,6 +302,7 @@ pnpm db:reset     # Reset local database
 ### Automatic Deployments (Recommended)
 
 Vercel automatically deploys:
+
 - **Production**: Every push to `main` branch
 - **Preview**: Every pull request
 - **Branch**: Optional per branch
@@ -295,10 +320,12 @@ vercel --prod
 ### Environment Variables
 
 **Required in Vercel:**
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 **How to add:**
+
 1. Go to Vercel project settings
 2. Navigate to Environment Variables
 3. Add variables for Production, Preview, and Development
@@ -333,4 +360,3 @@ This template is MIT licensed. You can use it for any project, commercial or per
 ---
 
 **Happy coding! 🚀**
-

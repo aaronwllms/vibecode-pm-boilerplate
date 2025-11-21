@@ -5,7 +5,7 @@ import { logger } from '@/utils/logger'
 
 export async function GET(request: Request) {
   const source = 'api/auth/callback/route.ts'
-  
+
   // The `/auth/callback` route is required for the server-side auth flow implemented
   // by the Auth Helpers package. It exchanges an auth code for the user's session.
   // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-sign-in-with-code-exchange
@@ -31,7 +31,9 @@ export async function GET(request: Request) {
         })
 
         // Redirect to login with error message
-        return NextResponse.redirect(`${requestUrl.origin}/login?message=Authentication failed`)
+        return NextResponse.redirect(
+          `${requestUrl.origin}/login?message=Authentication failed`,
+        )
       }
     } catch (error) {
       logger.error({
@@ -45,7 +47,9 @@ export async function GET(request: Request) {
       })
 
       // Redirect to login with error message
-      return NextResponse.redirect(`${requestUrl.origin}/login?message=Authentication failed`)
+      return NextResponse.redirect(
+        `${requestUrl.origin}/login?message=Authentication failed`,
+      )
     }
   }
 

@@ -9,7 +9,7 @@ import type { ProfileActionResult } from '@/types/profile'
 const SOURCE = 'app/actions/profile-update.ts'
 
 export async function updateProfile(
-  formData: FormData
+  formData: FormData,
 ): Promise<ProfileActionResult> {
   try {
     const cookieStore = cookies()
@@ -128,4 +128,3 @@ export async function updateProfile(
     }
   }
 }
-

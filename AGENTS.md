@@ -70,7 +70,7 @@ This project uses **Supabase Cloud** for backend services.
   - Watch mode (all): `pnpm test -- --watch`
   - Watch mode (unit): `pnpm test:unit:watch`
   - Watch mode (integration): `pnpm test:integration:watch`
-- **Example Tests**: 
+- **Example Tests**:
   - Unit: `/src/utils/logger.unit.test.ts`
 
 ## Quality Checks
@@ -141,4 +141,3 @@ This will build the project and open the bundle analyzer in your browser.
 - Vercel Analytics is included for deployment on Vercel
 - Next Top Loader provides a progress bar during page navigation
 - Dark mode is handled by `next-themes` with the ThemeProvider
-

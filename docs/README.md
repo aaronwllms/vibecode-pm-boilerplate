@@ -22,4 +22,3 @@ This directory contains all project documentation organized into categories.
 - Keep directory structure flat (no subdirectories)
 
 For complete documentation standards, see `.cursor/rules/documentation.mdc`
-
