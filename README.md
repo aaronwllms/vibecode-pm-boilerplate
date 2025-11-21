@@ -1,22 +1,21 @@
-![image](https://github.com/michaeltroya/supa-next-starter/assets/38507347/2ea40874-98de-49ec-ab6a-74c816e6ca22)
-
-<h1 align="center">⚡ SupaNext Starter Kit ⚡</h1>
+<h1 align="center">⚡ NextPM ⚡</h1>
 
 <p align="center">
- The Last Next.js and Supabase Starter You Will Ever Need
+ Build with AI, Ship with Confidence
+</p>
+
+<p align="center">
+  <em>A starter template designed for product managers who code with AI</em>
 </p>
 
 <div align="center">
 
-<img alt="GitHub License" src="https://img.shields.io/github/license/michaeltroya/supa-next-starter">
+<img alt="GitHub License" src="https://img.shields.io/github/license/aaronwllms/supa-next-starter">
 
-  <a href="https://twitter.com/intent/follow?screen_name=michaeltroya_">
-   <img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/michaeltroya_">
-  </a>
 </div>
 
 <div align="center">
-  <sub>Created by <a href="https://twitter.com/michaeltroya_">Michael Troya</a>
+  <sub>NextPM created by <a href="https://github.com/aaronwllms">@aaronwllms</a> · Forked from <a href="https://github.com/michaeltroya/supa-next-starter">michaeltroya/supa-next-starter</a>
 </div>
 
 <br/>
@@ -30,7 +29,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vercel.com/new/clone?repository-url=https://github.com/michaeltroya/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20for%20your%20project&envLink=https://app.supabase.com/project/_/settings/api&project-name=my-supanext-app&repository-name=my-supanext-app">
+  <a href="https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20for%20your%20project&envLink=https://app.supabase.com/project/_/settings/api&project-name=nextpm-app&repository-name=nextpm-app">
     <img src="https://vercel.com/button" alt="Deploy with Vercel"/>
   </a>
 </p>
@@ -38,25 +37,32 @@
 
 ## Features
 
-- ⚡️ Next.js 14 (App Router)
-- 💚 Supabase w/ supabase-ssr - Works across the entire [Next.js](https://nextjs.org) stack (App Router, Pages Router, Client, Server, Middleware, It just works!)
-- ⚛️ React 18
-- ⛑ TypeScript
-- 📦 [pnpm](https://pnpm.io/) - Fast, disk space efficient package manager
-- 🎨 [Tailwind](https://tailwindcss.com/)
-- 🔌 [shadcn/ui](https://ui.shadcn.com/) - Beautifully designed components that you can copy and paste into your apps.
-- 🧪 Jest w/SWC + React Testing Library - Unit tests for all of your code.
-- 🎛️ [MSW](https://mswjs.io/)v2 - Intercept requests inside your tests (set up for testing only)
-- 🪝[TanStackQuery](https://tanstack.com/query/v5)v5 - The best way to fetch data on the client
-- 📏 ESLint — To find and fix problems in your code
-- 💖 Prettier — Code Formatter for consistent style
-- 🐶 Husky — For running scripts before committing
-- 🚫 lint-staged — Run ESLint and Prettier against staged Git files
-- 👷 Github Actions — Run Type Checks, Tests, and Linters on Pull Requests
-- 🗂 Path Mapping — Import components or images using the `@` prefix
-- ⚪⚫ Dark mode - Toggle theme modes with [next-themes](https://github.com/pacocoursey/next-themes)
-- ✨ Next Top Loader - Render a pleasent top loader on navigation with [nextjs-toploader](https://github.com/TheSGJ/nextjs-toploader)
-- 🔋 Lots Extras - Next Bundle Analyzer, Vercel Analytics, Vercel Geist Font
+### AI-Powered Development
+- 🤖 **Cursor Rules & AGENTS.md** - Pre-configured rules that guide AI to follow best practices, ensuring consistent, high-quality code generation
+- 📚 **PM-Friendly Documentation** - Clear guides for non-developers, including [Quick Start for PMs](docs/QUICK_START_FOR_PMS.md) to help you build with confidence
+
+### Built-in Guardrails
+- ⛑ **TypeScript Strict Mode** - Catches errors before code runs. If `pnpm type-check` passes, your code is type-safe
+- 📏 **ESLint** - Enforces coding standards automatically. Run `pnpm lint` before committing
+- 💖 **Prettier** - Auto-formats code consistently. Run `pnpm format` to fix formatting
+- 🧪 **Jest + React Testing Library** - Unit and integration tests with MSW v2 for API mocking
+
+### Production-Ready Stack
+- ⚡️ **Next.js 14 (App Router)** - Latest Next.js with Server Components
+- 💚 **Supabase w/ supabase-ssr** - Works across the entire Next.js stack (App Router, Client, Server, Middleware)
+- ⚛️ **React 18** - Latest React features
+- 🪝 **TanStack Query v5** - The best way to fetch data on the client
+- 🎨 **Tailwind CSS** - Utility-first styling
+- 🔌 **shadcn/ui** - Beautifully designed components you can copy and paste
+
+### Developer Experience
+- 📦 **pnpm** - Fast, disk space efficient package manager
+- 🐶 **Husky + lint-staged** - Run quality checks before committing
+- 👷 **GitHub Actions** - Run Type Checks, Tests, and Linters on Pull Requests
+- 🗂 **Path Mapping** - Import components using the `@` prefix
+- ⚪⚫ **Dark mode** - Toggle theme modes with [next-themes](https://github.com/pacocoursey/next-themes)
+- ✨ **Next Top Loader** - Progress bar during navigation
+- 🔋 **Extras** - Bundle Analyzer, Vercel Analytics, Geist Font
 
 ## Quick Start
 
@@ -64,7 +70,7 @@
 
 1. **Use this template** (click "Use this template" button on GitHub) or clone:
    ```bash
-   git clone https://github.com/michaeltroya/supa-next-starter.git my-project
+   git clone https://github.com/aaronwllms/supa-next-starter.git my-project
    cd my-project
    ```
 
@@ -96,7 +102,7 @@
 
 1. **Clone and install:**
    ```bash
-   git clone https://github.com/michaeltroya/supa-next-starter.git my-project
+   git clone https://github.com/aaronwllms/supa-next-starter.git my-project
    cd my-project
    pnpm install
    ```
@@ -135,7 +141,7 @@
 
 Deploy directly to Vercel with environment variable prompts:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/michaeltroya/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/supa-next-starter&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 After deployment:
 1. Create a [Supabase project](https://app.supabase.com)
@@ -145,12 +151,13 @@ After deployment:
 
 ## Showcase
 
-Websites started using this template:
+Projects built with NextPM:
 
-- [mainspring.pro](https://www.mainspring.pro/)
-- [Add yours](https://github.com/michaeltroya/supa-next-starter/edit/main/README.md)
+- [Add yours](https://github.com/aaronwllms/supa-next-starter/edit/main/README.md)
 
 # Documentation
+
+> **For Product Managers**: Start with [Quick Start for PMs](docs/QUICK_START_FOR_PMS.md) to learn how to use Cursor effectively, validate AI-generated code, and build features with confidence.
 
 > **For AI Coding Agents**: See [AGENTS.md](AGENTS.md) for detailed setup instructions, code conventions, testing guidelines, and project structure information.
 
@@ -205,7 +212,7 @@ This starter is optimized for [Vercel](https://vercel.com):
 
 1. **One-Click Deploy:**
    
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/michaeltroya/supa-next-starter)
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaronwllms/supa-next-starter)
 
 2. **Manual Deploy:**
    - Push your code to GitHub
@@ -290,4 +297,15 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Feedback and issues
 
-Please file feedback and issues [here](https://github.com/michaeltroya/supa-next-starter/issues).
+Please file feedback and issues [here](https://github.com/aaronwllms/supa-next-starter/issues).
+
+## Credits
+
+**NextPM** is created by [@aaronwllms](https://github.com/aaronwllms) and is a fork of [michaeltroya/supa-next-starter](https://github.com/michaeltroya/supa-next-starter) by [Michael Troya](https://twitter.com/michaeltroya_). 
+
+NextPM extends the original starter with:
+- Focus on AI-powered development for Product Managers
+- Comprehensive Cursor rules and AI guidance
+- PM-friendly documentation and quick start guides
+- Enhanced guardrails and quality checks
+- Clear mission: "Build with AI, Ship with Confidence"
