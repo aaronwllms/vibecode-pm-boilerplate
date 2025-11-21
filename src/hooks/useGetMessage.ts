@@ -1,5 +1,6 @@
 import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
+import { logger } from '@/utils/logger'
 
 interface MessageResponse {
   success: boolean
@@ -19,9 +20,17 @@ const useGetMessage = (): UseQueryResult<{ message: string }, Error> =>
       const { data } = await axios.get<MessageResponse>('/api/message')
 
       if (!data.success || !data.data) {
-        throw new Error(
-          data.error?.message || 'Failed to fetch message'
-        )
+        const errorMessage = data.error?.message || 'Failed to fetch message'
+        const errorCode = data.error?.code || 'EXTERNAL_API_ERROR'
+
+        logger.error({
+          source: 'hooks/useGetMessage.ts',
+          message: errorMessage,
+          code: errorCode,
+          context: { responseData: data },
+        })
+
+        throw new Error(errorMessage)
       }
 
       return data.data

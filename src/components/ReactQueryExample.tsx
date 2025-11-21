@@ -15,7 +15,12 @@ const ReactQueryExample = () => {
       error,
     })
 
-    return <ErrorDisplay message="Failed to load message. Please try again." />
+    return (
+      <ErrorDisplay
+        message="Failed to load message. Please try again."
+        code="EXTERNAL_API_ERROR"
+      />
+    )
   }
 
   if (isLoading) return <div>Loading...</div>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Copy, Check } from 'lucide-react'
+import { logger } from '@/utils/logger'
 
 interface CriticalErrorBannerProps {
   message: string
@@ -24,7 +25,12 @@ export function CriticalErrorBanner({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      logger.error({
+        source: 'components/critical-error-banner.tsx',
+        message: 'Failed to copy error details to clipboard',
+        code: 'CLIPBOARD_ERROR',
+        error: err,
+      })
     }
   }
 
@@ -32,12 +38,10 @@ export function CriticalErrorBanner({
     <Alert variant="destructive" className="mb-6">
       <AlertCircle className="h-5 w-5" />
       <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-1 flex-1">
+        <div className="flex flex-1 flex-col gap-1">
           <AlertTitle className="text-lg">Critical Error</AlertTitle>
-          <AlertDescription className="text-base">
-            {message}
-          </AlertDescription>
-          <code className="text-xs bg-destructive/10 px-2 py-1 rounded mt-2 inline-block self-start">
+          <AlertDescription className="text-base">{message}</AlertDescription>
+          <code className="mt-2 inline-block self-start rounded bg-destructive/10 px-2 py-1 text-xs">
             {errorCode}
           </code>
         </div>
@@ -45,7 +49,7 @@ export function CriticalErrorBanner({
           onClick={handleCopy}
           variant="outline"
           size="sm"
-          className="gap-2 shrink-0"
+          className="shrink-0 gap-2"
         >
           {copied ? (
             <>
@@ -63,4 +67,3 @@ export function CriticalErrorBanner({
     </Alert>
   )
 }
-

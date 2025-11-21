@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createMiddlewareClient } from '@/utils/supabase'
+import { logger } from '@/utils/logger'
 
 export async function middleware(request: NextRequest) {
   try {
@@ -16,6 +17,13 @@ export async function middleware(request: NextRequest) {
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.
+    logger.error({
+      source: 'middleware.ts',
+      message: 'Failed to create Supabase client',
+      code: 'SUPABASE_CONNECTION_ERROR',
+      error: e,
+    })
+
     return NextResponse.next({
       request: { headers: request.headers },
     })
