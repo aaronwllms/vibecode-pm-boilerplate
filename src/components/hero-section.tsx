@@ -1,44 +1,38 @@
-import NextLogo from './NextLogo'
-import SupabaseLogo from './SupabaseLogo'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
-export default function Header() {
+export default function HeroSection() {
   return (
-    <div className="flex flex-col items-center gap-16">
-      <div className="flex items-center justify-center gap-8">
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <SupabaseLogo />
-        </a>
-        <span className="h-6 rotate-45 border-l" />
-        <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <NextLogo />
-        </a>
+    <section className="flex flex-col items-center gap-8 px-4 py-20 text-center md:py-24">
+      <div className="flex max-w-4xl flex-col gap-6 duration-700 animate-in fade-in slide-in-from-bottom-4">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            Build with AI, Ship with{' '}
+            <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              Confidence
+            </span>
+          </h1>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl md:text-2xl">
+            A starter template designed for product managers who code with AI.
+            Built-in guardrails, best practices, and Cursor rules so you can
+            focus on building, not debugging.
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <Button asChild size="lg" className="w-full sm:w-auto">
+            <Link href="/login">Start Building</Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="lg"
+            className="w-full sm:w-auto"
+          >
+            <Link href="/docs">Read the Guide</Link>
+          </Button>
+        </div>
       </div>
-      <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-      <p className="mx-auto max-w-xl text-center text-3xl !leading-tight lg:text-4xl">
-        The fastest way to build apps with{' '}
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Supabase
-        </a>{' '}
-        and{' '}
-        <a
-          href="https://nextjs.org/"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Next.js
-        </a>
-      </p>
-      <div className="my-8 w-full bg-gradient-to-r from-transparent via-foreground/10 to-transparent p-[1px]" />
-    </div>
+    </section>
   )
 }
