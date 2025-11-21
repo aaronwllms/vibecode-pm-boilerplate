@@ -1,21 +1,37 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createMiddlewareClient } from '@/utils/supabase'
+import { logger } from '@/utils/logger'
 
 export async function middleware(request: NextRequest) {
   try {
-    // This `try/catch` block is only here for the interactive tutorial.
-    // Feel free to remove once you have Supabase connected.
     const { supabase, response } = createMiddlewareClient(request)
 
     // Refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
-    await supabase.auth.getSession()
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+
+    // Lightweight redirect for admin routes - full auth/role check happens at page level
+    const pathname = request.nextUrl.pathname
+    if (pathname.startsWith('/admin') && !session) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
 
     return response
   } catch (e) {
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.
+    logger.error({
+      source: 'middleware.ts',
+      message: 'Failed to create Supabase client',
+      code: 'SUPABASE_CONNECTION_ERROR',
+      error: e,
+    })
+
     return NextResponse.next({
       request: { headers: request.headers },
     })

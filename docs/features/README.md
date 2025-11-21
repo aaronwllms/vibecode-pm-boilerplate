@@ -5,6 +5,7 @@ This directory contains architectural documentation for major features.
 ## Purpose
 
 Feature docs provide:
+
 - Visual flow diagrams (Mermaid)
 - User experience descriptions
 - Technical implementation details
@@ -15,6 +16,7 @@ Feature docs provide:
 ## When to Create Feature Docs
 
 Create documentation when a feature:
+
 - Has complex state management or flows
 - Involves multiple components or systems
 - Has non-obvious behavior or edge cases
@@ -24,6 +26,7 @@ Create documentation when a feature:
 ## Template
 
 Use `TEMPLATE.md` as the starting point for all feature documentation. The template includes:
+
 - Mermaid flow diagrams with color-coded node styles
 - User experience sections for PM clarity
 - Technical details for developers
@@ -38,6 +41,7 @@ Use `TEMPLATE.md` as the starting point for all feature documentation. The templ
 ## Examples
 
 Good feature doc names:
+
 - `authentication-flow.md`
 - `real-time-notifications.md`
 - `offline-sync-strategy.md`
@@ -45,8 +49,8 @@ Good feature doc names:
 ## Maintenance
 
 Review feature docs when:
+
 - Implementation changes significantly
 - Edge cases are discovered
 - User feedback reveals confusion
 - Feature is deprecated (then archive with `features-` prefix)
-

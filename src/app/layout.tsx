@@ -5,6 +5,9 @@ import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
+import { ErrorProvider } from '@/providers/error-provider'
+import { ErrorBanner } from '@/components/error-banner'
+import { AppHeader } from '@/components/header/app-header'
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -12,8 +15,9 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Next.js and Supabase Starter Kit',
-  description: 'The fastest way to build apps with Next.js and Supabase',
+  title: 'pm-app - Build with AI, Ship with Confidence',
+  description:
+    'A starter template designed for product managers who code with AI. Built-in guardrails, best practices, and Cursor rules.',
 }
 
 export default function RootLayout({
@@ -37,12 +41,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ReactQueryProvider>
-            <main className="flex min-h-screen flex-col items-center">
-              {children}
-              <Analytics />{' '}
-              {/* ^^ remove this if you are not deploying to vercel. See more at https://vercel.com/docs/analytics  */}
-            </main>
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ErrorProvider>
+              <ErrorBanner />
+              <AppHeader />
+              <main className="flex min-h-screen flex-col items-center">
+                {children}
+                <Analytics />{' '}
+                {/* ^^ remove this if you are not deploying to vercel. See more at https://vercel.com/docs/analytics  */}
+              </main>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ErrorProvider>
           </ReactQueryProvider>
         </ThemeProvider>
       </body>

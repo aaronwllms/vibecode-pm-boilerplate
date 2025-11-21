@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-SupaNext Starter Kit - A production-ready Next.js 14 (App Router) + Supabase starter template with TypeScript, Tailwind CSS, shadcn/ui, testing setup, and developer tooling.
+pm-app - A production-ready Next.js 14 (App Router) + Supabase starter template with TypeScript, Tailwind CSS, shadcn/ui, testing setup, and developer tooling.
 
 ## Setup Commands
 
@@ -15,7 +15,7 @@ SupaNext Starter Kit - A production-ready Next.js 14 (App Router) + Supabase sta
 
 ## Environment Setup
 
-Before running the project, you need to set up Supabase credentials:
+This project uses **Supabase Cloud** for backend services.
 
 1. Create a `.env.local` file in the root directory (if not exists)
 2. Add the following required environment variables:
@@ -29,13 +29,13 @@ Before running the project, you need to set up Supabase credentials:
 
 - Node.js >= 18.17.0
 - pnpm 8 or higher (this project uses pnpm as the package manager)
+- Supabase CLI (included via package scripts)
 
 ## Project Structure
 
 - `/src/app/` - Next.js 14 App Router pages and API routes
-  - `/api/` - API routes including auth callbacks and message endpoints
+  - `/api/` - API routes including auth callbacks
   - `/login/` - Authentication page
-  - `/test-examples/` - Example test files and components
 - `/src/components/` - React components including auth, UI components, and examples
   - `/ui/` - shadcn/ui components (Button, DropdownMenu, etc.)
 - `/src/hooks/` - Custom React hooks
@@ -70,9 +70,8 @@ Before running the project, you need to set up Supabase credentials:
   - Watch mode (all): `pnpm test -- --watch`
   - Watch mode (unit): `pnpm test:unit:watch`
   - Watch mode (integration): `pnpm test:integration:watch`
-- **Example Tests**: 
-  - Unit: `/src/utils/logger.unit.test.ts`, `/src/app/test-examples/counter.unit.test.tsx`
-  - Integration: `/src/components/ReactQueryExample.integration.test.tsx`
+- **Example Tests**:
+  - Unit: `/src/utils/logger.unit.test.ts`
 
 ## Quality Checks
 
@@ -97,10 +96,21 @@ GitHub Actions will automatically run type checks, tests, and linters on Pull Re
 
 ## Supabase Integration
 
-- Supabase client utilities are in `/src/utils/supabase.ts`
-- Auth callback route: `/src/app/api/auth/callback/route.ts`
+- **Client utilities**: `/src/utils/supabase.ts`
+- **Auth callback route**: `/src/app/api/auth/callback/route.ts`
+- **Migrations**: `/supabase/migrations/`
+- **Config**: `/supabase/config.toml`
+- **Seed data**: `/supabase/seed.sql`
 - Auth works across the entire Next.js stack (App Router, Client, Server, Middleware)
 - Use the appropriate Supabase client function based on context (server component, client component, middleware, route handler)
+
+### Database Commands
+
+- `pnpm db:reset` - Reset database (reruns migrations + seeds)
+- `pnpm db:push` - Push new migrations to Supabase project
+- `pnpm db:types` - Generate TypeScript types from schema
+- `pnpm db:seed` - Run seed file
+- `pnpm db:status` - Show migration status
 
 ## Adding New Components
 
@@ -131,4 +141,3 @@ This will build the project and open the bundle analyzer in your browser.
 - Vercel Analytics is included for deployment on Vercel
 - Next Top Loader provides a progress bar during page navigation
 - Dark mode is handled by `next-themes` with the ThemeProvider
-

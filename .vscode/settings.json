@@ -2,4 +2,3 @@
   "jest.jestCommandLine": "pnpm test --",
   "jest.runMode": "on-demand"
 }
-

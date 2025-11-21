@@ -38,15 +38,13 @@ const SENSITIVE_KEYS = [
 /**
  * Sanitizes context object by redacting sensitive fields
  */
-function sanitizeContext(
-  context: Record<string, any>
-): Record<string, any> {
+function sanitizeContext(context: Record<string, any>): Record<string, any> {
   const sanitized: Record<string, any> = {}
 
   for (const [key, value] of Object.entries(context)) {
     const lowerKey = key.toLowerCase()
     const isSensitive = SENSITIVE_KEYS.some((sensitiveKey) =>
-      lowerKey.includes(sensitiveKey)
+      lowerKey.includes(sensitiveKey),
     )
 
     if (isSensitive) {
@@ -84,7 +82,7 @@ function shouldLog(level: LogLevel): boolean {
  */
 function createStructuredLog(
   level: LogLevel,
-  params: LogParams
+  params: LogParams,
 ): StructuredLog {
   const { source, message, code, context, error } = params
 
@@ -176,4 +174,3 @@ export const logger = {
 
 // Export types for use in other files
 export type { LogParams, LogLevel }
-
