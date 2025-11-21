@@ -99,7 +99,6 @@ export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
       <DropdownMenuContent
         className={isEditing ? 'w-80' : 'w-56'}
         align="end"
-        forceMount
       >
         {!isEditing ? (
           <>
