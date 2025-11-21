@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
+import { signOutAction } from '@/app/actions/auth'
 
 export default async function AuthButton() {
   const cookieStore = cookies()
@@ -11,19 +11,10 @@ export default async function AuthButton() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const signOut = async () => {
-    'use server'
-
-    const cookieStore = cookies()
-    const supabase = createServerClient(cookieStore)
-    await supabase.auth.signOut()
-    return redirect('/login')
-  }
-
   return user ? (
     <div className="flex items-center gap-4">
       Hey, {user.email}!
-      <form action={signOut}>
+      <form action={signOutAction}>
         <button className="bg-btn-background hover:bg-btn-background-hover rounded-md px-4 py-2 no-underline">
           Logout
         </button>

@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { updateProfile } from '@/app/actions/profile'
 import { AvatarUploadSection } from './avatar-upload-section'
+import { useError } from '@/providers/error-provider'
 import type { Profile } from '@/types/profile'
 
 interface ProfileEditFormProps {
@@ -38,18 +39,19 @@ export function ProfileEditForm({
   onClose,
 }: ProfileEditFormProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState<string>('')
+  const [successMessage, setSuccessMessage] = useState<string>('')
+  const { setError } = useError()
 
   const handleProfileUpdate = async (formData: FormData) => {
     setIsLoading(true)
-    setMessage('')
+    setSuccessMessage('')
 
     const result = await updateProfile(formData)
 
     if (result.success) {
-      setMessage('Profile updated successfully')
-    } else {
-      setMessage(result.error || 'Failed to update profile')
+      setSuccessMessage('Profile updated successfully')
+    } else if (result.error) {
+      setError(result.error)
     }
 
     setIsLoading(false)
@@ -89,14 +91,9 @@ export function ProfileEditForm({
           />
         </div>
 
-        {message && (
-          <p
-            role="alert"
-            className={`text-sm ${
-              message.includes('success') ? 'text-green-600' : 'text-red-600'
-            }`}
-          >
-            {message}
+        {successMessage && (
+          <p role="status" className="text-sm text-green-600">
+            {successMessage}
           </p>
         )}
 
@@ -114,7 +111,7 @@ export function ProfileEditForm({
             variant="outline"
             onClick={() => {
               onClose()
-              setMessage('')
+              setSuccessMessage('')
             }}
             disabled={isLoading}
           >

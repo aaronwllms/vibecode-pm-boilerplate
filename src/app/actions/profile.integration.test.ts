@@ -83,7 +83,10 @@ describe('Profile Server Actions', () => {
       const result = await updateProfile(formData)
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Not authenticated')
+      expect(result.error).toEqual({
+        message: 'Not authenticated',
+        code: 'UNAUTHORIZED',
+      })
     })
 
     it('should validate name length', async () => {
@@ -98,7 +101,10 @@ describe('Profile Server Actions', () => {
       const result = await updateProfile(formData)
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Name must be 100 characters or less')
+      expect(result.error).toEqual({
+        message: 'Name must be 100 characters or less',
+        code: 'VALIDATION_ERROR',
+      })
     })
 
     it('should validate bio length', async () => {
@@ -113,7 +119,10 @@ describe('Profile Server Actions', () => {
       const result = await updateProfile(formData)
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Bio must be 500 characters or less')
+      expect(result.error).toEqual({
+        message: 'Bio must be 500 characters or less',
+        code: 'VALIDATION_ERROR',
+      })
     })
   })
 
@@ -131,7 +140,10 @@ describe('Profile Server Actions', () => {
       const result = await uploadAvatar(formData)
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Not authenticated')
+      expect(result.error).toEqual({
+        message: 'Not authenticated',
+        code: 'UNAUTHORIZED',
+      })
     })
 
     it('should handle missing file', async () => {
@@ -145,7 +157,10 @@ describe('Profile Server Actions', () => {
       const result = await uploadAvatar(formData)
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('No file provided')
+      expect(result.error).toEqual({
+        message: 'No file provided',
+        code: 'VALIDATION_ERROR',
+      })
     })
 
     it('should validate file type', async () => {
@@ -161,7 +176,8 @@ describe('Profile Server Actions', () => {
       const result = await uploadAvatar(formData)
 
       expect(result.success).toBe(false)
-      expect(result.error).toContain('Invalid file type')
+      expect(result.error?.message).toContain('Invalid file type')
+      expect(result.error?.code).toBe('VALIDATION_ERROR')
     })
   })
 
@@ -175,7 +191,10 @@ describe('Profile Server Actions', () => {
       const result = await deleteAvatar()
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('Not authenticated')
+      expect(result.error).toEqual({
+        message: 'Not authenticated',
+        code: 'UNAUTHORIZED',
+      })
     })
 
     it('should handle missing avatar', async () => {
@@ -197,7 +216,10 @@ describe('Profile Server Actions', () => {
       const result = await deleteAvatar()
 
       expect(result.success).toBe(false)
-      expect(result.error).toBe('No avatar to delete')
+      expect(result.error).toEqual({
+        message: 'No avatar to delete',
+        code: 'NOT_FOUND',
+      })
     })
   })
 })

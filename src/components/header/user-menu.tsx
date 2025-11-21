@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ProfileEditForm } from './profile-edit-form'
+import { useError } from '@/providers/error-provider'
 import type { Profile } from '@/types/profile'
 
 interface UserMenuProps {
@@ -38,6 +39,8 @@ function getInitials(email?: string, name?: string | null): string {
 export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const { setError } = useError()
 
   const handleEditClick = () => {
     setIsEditing(true)
@@ -52,6 +55,25 @@ export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
     if (!open) {
       // Reset to menu view when dropdown closes
       setIsEditing(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    try {
+      await onSignOut()
+    } catch (error) {
+      // If the server action returns an error instead of redirecting
+      if (error && typeof error === 'object' && 'error' in error) {
+        const actionResult = error as { error: { message: string; code: string } }
+        setError(actionResult.error)
+      } else {
+        setError({
+          message: 'Failed to sign out. Please try again.',
+          code: 'SIGNOUT_FAILED',
+        })
+      }
+      setIsSigningOut(false)
     }
   }
 
@@ -101,7 +123,9 @@ export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
               Edit Profile
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onSignOut}>Sign Out</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
+              {isSigningOut ? 'Signing out...' : 'Sign Out'}
+            </DropdownMenuItem>
           </>
         ) : (
           <>
@@ -110,7 +134,7 @@ export function UserMenu({ user, profile, onSignOut }: UserMenuProps) {
             <ProfileEditForm
               user={user}
               profile={profile}
-              onSignOut={onSignOut}
+              onSignOut={handleSignOut}
               onClose={handleClose}
             />
           </>

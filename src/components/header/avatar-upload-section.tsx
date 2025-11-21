@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { uploadAvatar, deleteAvatar } from '@/app/actions/profile'
+import { useError } from '@/providers/error-provider'
 import type { Profile } from '@/types/profile'
 
 interface AvatarUploadSectionProps {
@@ -24,6 +25,7 @@ export function AvatarUploadSection({
   const [isLoading, setIsLoading] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { setError } = useError()
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -53,8 +55,8 @@ export function AvatarUploadSection({
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-    } else {
-      onMessage(result.error || 'Failed to upload avatar')
+    } else if (result.error) {
+      setError(result.error)
     }
 
     setIsLoading(false)
@@ -68,8 +70,8 @@ export function AvatarUploadSection({
 
     if (result.success) {
       onMessage('Avatar deleted successfully')
-    } else {
-      onMessage(result.error || 'Failed to delete avatar')
+    } else if (result.error) {
+      setError(result.error)
     }
 
     setIsLoading(false)

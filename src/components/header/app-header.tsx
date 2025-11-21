@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
+import { signOutAction } from '@/app/actions/auth'
 import { NavLinks } from './nav-links'
 import { UserMenu, LoginButton } from './user-menu'
 import { MobileNav } from './mobile-nav'
@@ -26,14 +26,6 @@ export async function AppHeader() {
       .single()
 
     profile = data
-  }
-
-  const signOut = async () => {
-    'use server'
-    const cookieStore = cookies()
-    const supabase = createServerClient(cookieStore)
-    await supabase.auth.signOut()
-    return redirect('/login')
   }
 
   return (
@@ -65,7 +57,7 @@ export async function AppHeader() {
           {/* User Menu - Desktop Only */}
           <div className="hidden md:block">
             {user && profile ? (
-              <UserMenu user={user} profile={profile} onSignOut={signOut} />
+              <UserMenu user={user} profile={profile} onSignOut={signOutAction} />
             ) : (
               <LoginButton />
             )}
@@ -75,7 +67,7 @@ export async function AppHeader() {
           <MobileNav
             user={user}
             profile={profile}
-            onSignOut={signOut}
+            onSignOut={signOutAction}
           />
         </div>
       </div>

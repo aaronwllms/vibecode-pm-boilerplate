@@ -27,7 +27,10 @@ export async function deleteAvatar(): Promise<ProfileActionResult> {
       })
       return {
         success: false,
-        error: 'Not authenticated',
+        error: {
+          message: 'Not authenticated',
+          code: 'UNAUTHORIZED',
+        },
       }
     }
 
@@ -41,7 +44,10 @@ export async function deleteAvatar(): Promise<ProfileActionResult> {
     if (!profile?.avatar_url) {
       return {
         success: false,
-        error: 'No avatar to delete',
+        error: {
+          message: 'No avatar to delete',
+          code: 'NOT_FOUND',
+        },
       }
     }
 
@@ -61,7 +67,10 @@ export async function deleteAvatar(): Promise<ProfileActionResult> {
       })
       return {
         success: false,
-        error: 'Failed to delete avatar',
+        error: {
+          message: 'Failed to delete avatar',
+          code: 'EXTERNAL_API_ERROR',
+        },
       }
     }
 
@@ -81,7 +90,10 @@ export async function deleteAvatar(): Promise<ProfileActionResult> {
       })
       return {
         success: false,
-        error: 'Failed to update profile',
+        error: {
+          message: 'Failed to update profile',
+          code: 'DATABASE_ERROR',
+        },
       }
     }
 
@@ -107,7 +119,10 @@ export async function deleteAvatar(): Promise<ProfileActionResult> {
     })
     return {
       success: false,
-      error: 'An unexpected error occurred',
+      error: {
+        message: 'An unexpected error occurred',
+        code: 'INTERNAL_ERROR',
+      },
     }
   }
 }

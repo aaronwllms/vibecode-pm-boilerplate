@@ -16,12 +16,18 @@ export interface ProfileUpdateInput {
 export interface AvatarUploadResponse {
   success: boolean
   avatar_url?: string
-  error?: string
+  error?: {
+    message: string
+    code: string
+  }
 }
 
 export interface ProfileActionResult {
   success: boolean
   message?: string
-  error?: string
+  error?: {
+    message: string
+    code: string
+  }
 }
 

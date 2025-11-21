@@ -29,7 +29,10 @@ export async function updateProfile(
       })
       return {
         success: false,
-        error: 'Not authenticated',
+        error: {
+          message: 'Not authenticated',
+          code: 'UNAUTHORIZED',
+        },
       }
     }
 
@@ -47,7 +50,10 @@ export async function updateProfile(
       })
       return {
         success: false,
-        error: 'Name must be 100 characters or less',
+        error: {
+          message: 'Name must be 100 characters or less',
+          code: 'VALIDATION_ERROR',
+        },
       }
     }
 
@@ -60,7 +66,10 @@ export async function updateProfile(
       })
       return {
         success: false,
-        error: 'Bio must be 500 characters or less',
+        error: {
+          message: 'Bio must be 500 characters or less',
+          code: 'VALIDATION_ERROR',
+        },
       }
     }
 
@@ -83,7 +92,10 @@ export async function updateProfile(
       })
       return {
         success: false,
-        error: 'Failed to update profile',
+        error: {
+          message: 'Failed to update profile',
+          code: 'DATABASE_ERROR',
+        },
       }
     }
 
@@ -109,7 +121,10 @@ export async function updateProfile(
     })
     return {
       success: false,
-      error: 'An unexpected error occurred',
+      error: {
+        message: 'An unexpected error occurred',
+        code: 'INTERNAL_ERROR',
+      },
     }
   }
 }

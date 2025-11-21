@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ErrorProvider } from '@/providers/error-provider'
 
 // Create a new QueryClient for each test to avoid cache pollution
 const createTestQueryClient = () =>
@@ -21,7 +22,9 @@ const customRender = (
 ) => {
   const queryClient = createTestQueryClient()
   const Wrapper = ({ children }: { children: ReactElement }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ErrorProvider>{children}</ErrorProvider>
+    </QueryClientProvider>
   )
   return render(ui, { wrapper: Wrapper, ...options })
 }

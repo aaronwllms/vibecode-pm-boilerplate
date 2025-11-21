@@ -46,7 +46,10 @@ export async function uploadAvatar(
       })
       return {
         success: false,
-        error: 'Not authenticated',
+        error: {
+          message: 'Not authenticated',
+          code: 'UNAUTHORIZED',
+        },
       }
     }
 
@@ -57,7 +60,10 @@ export async function uploadAvatar(
     if (!validation.valid) {
       return {
         success: false,
-        error: validation.error!,
+        error: {
+          message: validation.error!,
+          code: 'VALIDATION_ERROR',
+        },
       }
     }
 
@@ -85,7 +91,10 @@ export async function uploadAvatar(
       })
       return {
         success: false,
-        error: 'Failed to upload avatar',
+        error: {
+          message: 'Failed to upload avatar',
+          code: 'EXTERNAL_API_ERROR',
+        },
       }
     }
 
@@ -110,7 +119,10 @@ export async function uploadAvatar(
       })
       return {
         success: false,
-        error: 'Failed to update profile with avatar URL',
+        error: {
+          message: 'Failed to update profile with avatar URL',
+          code: 'DATABASE_ERROR',
+        },
       }
     }
 
@@ -136,7 +148,10 @@ export async function uploadAvatar(
     })
     return {
       success: false,
-      error: 'An unexpected error occurred',
+      error: {
+        message: 'An unexpected error occurred',
+        code: 'INTERNAL_ERROR',
+      },
     }
   }
 }
