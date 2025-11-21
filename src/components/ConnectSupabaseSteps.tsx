@@ -45,7 +45,7 @@ export default function ConnectSupabaseSteps() {
         <p>
           You may need to quit your Next.js development server and run{' '}
           <span className="rounded-md bg-foreground/20 px-2 py-1 text-foreground/80">
-            npm run dev
+            pnpm dev
           </span>{' '}
           again to load the new environment variables.
         </p>

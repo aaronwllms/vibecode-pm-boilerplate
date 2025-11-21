@@ -1,6 +1,6 @@
 # 📋 Using This Template
 
-This document provides instructions for using SupaNext Starter as a template for your new projects.
+This document provides instructions for using NextPM as a template for your new projects.
 
 ## 🚀 Quick Start (5 Minutes)
 

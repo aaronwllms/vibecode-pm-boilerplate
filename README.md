@@ -166,7 +166,7 @@ Projects built with NextPM:
 ### Requirements
 
 - Node.js >= 18.17.0
-- pnpm 8 or higher
+- pnpm 9.15.2 or higher
 
 ### Development Scripts
 
@@ -198,7 +198,7 @@ Projects built with NextPM:
 TypeScript is pre-configured with custom path mappings. To import components or files, use the `@` prefix.
 
 ```tsx
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 
 // To import images or other files from the public folder
 import avatar from '@/public/avatar.png'
@@ -293,7 +293,7 @@ This starter uses pnpm by default. To switch to Yarn/npm:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for more information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for more information.
 
 ## Feedback and issues
 

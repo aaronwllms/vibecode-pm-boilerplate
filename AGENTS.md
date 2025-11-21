@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-SupaNext Starter Kit - A production-ready Next.js 14 (App Router) + Supabase starter template with TypeScript, Tailwind CSS, shadcn/ui, testing setup, and developer tooling.
+NextPM - A production-ready Next.js 14 (App Router) + Supabase starter template with TypeScript, Tailwind CSS, shadcn/ui, testing setup, and developer tooling.
 
 ## Setup Commands
 

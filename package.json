@@ -3,7 +3,7 @@
   "description": "A production ready Next.js/Supabase starter. ",
   "version": "1.0.0",
   "private": true,
-  "author": "Michael Troya <hi@michaeltroya.ca> (@michaeltroya)",
+  "author": "Aaron Williams (@aaronwllms)",
   "license": "MIT",
   "keywords": [
     "nextjs",
