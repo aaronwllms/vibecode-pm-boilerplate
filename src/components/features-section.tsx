@@ -5,7 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Bot, ShieldCheck, FileText, Rocket } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { Bot, ShieldCheck, FileText, Rocket, BookOpen } from 'lucide-react'
 
 const features = [
   {
@@ -72,6 +74,37 @@ export default function FeaturesSection() {
               </Card>
             )
           })}
+        </div>
+
+        {/* Quick Start for PMs Callout */}
+        <div className="mt-12 duration-700 animate-in fade-in slide-in-from-bottom-4">
+          <Card className="border-primary/50 bg-gradient-to-br from-primary/5 via-primary/5 to-transparent">
+            <CardHeader>
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <BookOpen className="h-6 w-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl">
+                    New to AI Development?
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Product Managers: Start here
+                  </CardDescription>
+                </div>
+              </div>
+              <p className="text-muted-foreground">
+                Learn how to use Cursor effectively, validate AI-generated code,
+                and build features with confidence. Our comprehensive guide
+                covers everything from getting started to best practices.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <Button asChild size="lg" className="w-full sm:w-auto">
+                <Link href="/docs">Read Quick Start for PMs</Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>

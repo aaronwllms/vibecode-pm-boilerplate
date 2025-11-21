@@ -142,11 +142,6 @@ After deployment:
 2. Add environment variables in Vercel project settings
 3. Redeploy
 
-> 💡 **Local Supabase Development**: Run Supabase locally with Docker for development! See:
-> - **[Docker Setup Guide](docs/DOCKER_SETUP.md)** - Install Docker
-> - **[Local Development Guide](docs/LOCAL_DEVELOPMENT.md)** - Complete setup walkthrough
-> 
-> Quick start: `pnpm supabase:start` (requires Docker Desktop)
 
 ## Showcase
 
@@ -185,11 +180,8 @@ Websites started using this template:
 **Database (Supabase):**
 - `pnpm db:types` — Generate TypeScript types from database schema
 - `pnpm db:push` — Push migrations to linked Supabase project
-- `pnpm db:reset` — Reset local database and apply all migrations
+- `pnpm db:reset` — Reset database and apply all migrations
 - `pnpm db:seed` — Seed database with test data
-- `pnpm supabase:start` — Start local Supabase stack
-- `pnpm supabase:stop` — Stop local Supabase stack
-- `pnpm supabase:status` — Check local Supabase status
 
 **Analysis:**
 - `pnpm analyze` — Build and open bundle analyzer

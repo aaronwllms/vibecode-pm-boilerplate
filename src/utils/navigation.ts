@@ -10,6 +10,11 @@ export const navigationConfig: NavLink[] = [
   // Public links
   { href: '/', label: 'Home', access: ['public', 'authenticated', 'admin'] },
   {
+    href: '/how-it-works',
+    label: 'How It Works',
+    access: ['public', 'authenticated', 'admin'],
+  },
+  {
     href: '/docs',
     label: 'Docs',
     access: ['public', 'authenticated', 'admin'],

@@ -15,35 +15,7 @@ SupaNext Starter Kit - A production-ready Next.js 14 (App Router) + Supabase sta
 
 ## Environment Setup
 
-You can run this project with either **Supabase Cloud** or **Local Supabase** (via Docker).
-
-### Option 1: Local Development (Recommended for Development)
-
-**Prerequisites:**
-- Docker Desktop installed and running
-- Supabase CLI installed (already included in project)
-
-**Quick Start:**
-```bash
-# 1. Start local Supabase (downloads Docker images first time)
-pnpm supabase:start
-
-# 2. Create .env.local with local credentials
-echo 'NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' > .env.local
-
-# 3. Start the dev server
-pnpm dev
-```
-
-**Local Services:**
-- **App**: http://localhost:3000
-- **Supabase Studio**: http://127.0.0.1:54323 (Database GUI)
-- **Inbucket**: http://127.0.0.1:54324 (Email testing)
-
-See [docs/LOCAL_DEVELOPMENT.md](./docs/LOCAL_DEVELOPMENT.md) for detailed setup instructions.
-
-### Option 2: Supabase Cloud
+This project uses **Supabase Cloud** for backend services.
 
 1. Create a `.env.local` file in the root directory (if not exists)
 2. Add the following required environment variables:
@@ -57,7 +29,6 @@ See [docs/LOCAL_DEVELOPMENT.md](./docs/LOCAL_DEVELOPMENT.md) for detailed setup 
 
 - Node.js >= 18.17.0
 - pnpm 8 or higher (this project uses pnpm as the package manager)
-- Docker Desktop (for local Supabase development)
 - Supabase CLI (included via package scripts)
 
 ## Project Structure
@@ -135,18 +106,13 @@ GitHub Actions will automatically run type checks, tests, and linters on Pull Re
 - Auth works across the entire Next.js stack (App Router, Client, Server, Middleware)
 - Use the appropriate Supabase client function based on context (server component, client component, middleware, route handler)
 
-### Local Supabase Commands
+### Database Commands
 
-- `pnpm supabase:start` - Start local Supabase (Docker)
-- `pnpm supabase:stop` - Stop local services
-- `pnpm supabase:status` - Check service status
 - `pnpm db:reset` - Reset database (reruns migrations + seeds)
-- `pnpm db:push` - Push new migrations to local database
+- `pnpm db:push` - Push new migrations to Supabase project
 - `pnpm db:types` - Generate TypeScript types from schema
 - `pnpm db:seed` - Run seed file
 - `pnpm db:status` - Show migration status
-
-See [Local Development Guide](./docs/LOCAL_DEVELOPMENT.md) for detailed documentation.
 
 ## Adding New Components
 

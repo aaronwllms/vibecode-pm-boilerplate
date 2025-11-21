@@ -4,9 +4,7 @@ This directory contains all project documentation organized into categories.
 
 ## Getting Started Guides
 
-- **[Quick Reference](./QUICK_REFERENCE.md)** - One-page cheat sheet for local development ⚡
-- **[Docker Setup](./DOCKER_SETUP.md)** - Install Docker for local Supabase development
-- **[Local Development](./LOCAL_DEVELOPMENT.md)** - Complete guide to running Supabase locally
+- **[Quick Start for PMs](./QUICK_START_FOR_PMS.md)** - Complete guide for Product Managers working with AI development tools 🚀
 
 ## Directory Structure
 
